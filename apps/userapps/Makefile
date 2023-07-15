@@ -79,7 +79,8 @@ ccflags-y +=  \
     -Ithirdparty/tile/tile_target \
 	-Iservices/multimedia/audio/process/filters/include \
 	-Iservices/bt_app/a2dp_codecs/include \
-	-Iapps/userapps
+	-Iapps/userapps \
+	-Iplatform/drivers/ac107
 	
 ifeq ($(ANC_APP),1)
 CFLAGS_app_user.o += -DANC_APP

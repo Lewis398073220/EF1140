@@ -12,7 +12,7 @@ RTOS        ?= 1
 KERNEL      ?= RTX
 #KERNEL      ?= FREERTOS
 
-export SPEECH_SIDETONE ?= 1
+#export SPEECH_SIDETONE ?= 1
 
 #add by pang
 CALIB_SLOW_TIMER ?= 0
@@ -172,6 +172,12 @@ APP_ANC_TEST ?= 1
 
 APP_LINEIN_A2DP_SOURCE ?= 0
 
+#add by pang for I2S linein
+AF_DEVICE_I2S ?= 1
+KBUILD_CPPFLAGS += -DAUDIO_LINEIN
+export I2S_MCLK_PIN ?= 1
+export I2S_MCLK_FROM_SPDIF ?= 1
+
 APP_I2S_A2DP_SOURCE ?= 0
 
 VOICE_PROMPT ?= 1
@@ -283,7 +289,7 @@ DSD_SUPPORT ?= 0
 
 A2DP_EQ_24BIT ?= 1
 
-A2DP_AAC_ON ?= 0
+A2DP_AAC_ON ?= 1
 
 A2DP_SCALABLE_ON ?= 0
 
@@ -434,6 +440,7 @@ KBUILD_CPPFLAGS += \
     -D__AUDIO_FADEIN__ \
     -D__NTC_DETECT__ \
     -D__USE_3_5JACK_CTR__ \
+    -D__AC107_ADC__ \
     -D__EVRCORD_USER_DEFINE__ \
     -DCUSTOM_BIN_CONFIG \
     -D__DEFINE_DEMO_MODE__ \

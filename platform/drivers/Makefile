@@ -1,4 +1,4 @@
-obj-y := ana/ codec/ norflash/ bt/ btpcm/ sbcacc/
+obj-y := ana/ codec/ norflash/ bt/ btpcm/ sbcacc/ ac107/
 
 ifeq ($(CHIP_HAS_USB),1)
 obj-y += usb/

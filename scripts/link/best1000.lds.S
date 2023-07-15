@@ -1016,7 +1016,7 @@ SECTIONS
 #if !defined(A2DP_AAC_ON) && !defined(A2DP_LHDC_ON)
 			*:fir_process.o(.text*)
 			/** m by cai for open usb audio and close AAC **/
-			//*:iir_process.o(.text*.iir_run .text*.*iir_run_per_*)
+			*:iir_process.o(.text*.iir_run .text*.*iir_run_per_*)
 #endif
 #endif
 #if defined(CHIP_HAS_CP) && (RAMCP_SIZE > 0)
