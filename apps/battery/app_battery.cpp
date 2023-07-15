@@ -431,6 +431,7 @@ int app_battery_handle_process_normal(uint32_t status,  union APP_BATTERY_MSG_PR
 }
 
 /** add by cai **/
+#ifdef BT_USB_AUDIO_DUAL_MODE
 uint8_t usb_plugout_to_proff_flag = 0;
 
 uint8_t usb_plugout_to_proff_status_get(void)
@@ -485,6 +486,7 @@ static void app_usb_plugout_timehandler(void const *param)
 		}
 	}
 }
+#endif
 /** end add **/
 
 int app_battery_handle_process_charging(uint32_t status,  union APP_BATTERY_MSG_PRAMS prams)
@@ -599,12 +601,18 @@ int app_battery_handle_process_charging(uint32_t status,  union APP_BATTERY_MSG_
 			{
 				hal_gpio_pin_clr((enum HAL_GPIO_PIN_T)app_battery_ext_charger_enable_cfg.pin);
 			}
+			#ifdef BT_USB_AUDIO_DUAL_MODE
 			if(!(get_usb_configured_status() || hal_usb_configured()) && !app_nvrecord_demo_mode_get())
 			{
 				TRACE(0,"FULL_CHARGING-->shutdown");
                 osTimerStop(app_battery_timer);
                 app_shutdown();
 			}
+			#else
+			TRACE(0,"FULL_CHARGING-->shutdown");
+			osTimerStop(app_battery_timer);
+			app_shutdown();
+			#endif
 			/** end add **/
         }
 		else {   //add by cai for current recharge

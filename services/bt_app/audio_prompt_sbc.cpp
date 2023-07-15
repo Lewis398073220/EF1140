@@ -21,10 +21,10 @@
 #include "app_bt.h"
 
 /** add by cai **/
+#ifdef BT_USB_AUDIO_DUAL_MODE
 #include "btusb_audio.h"
 #include "usb_audio_app.h"
 
-#ifdef BT_USB_AUDIO_DUAL_MODE
 extern "C" int hal_usb_configured(void);
 #endif
 /** end add **/
