@@ -2086,7 +2086,6 @@ extern int rpc_service_setup(void);
                 TRACE(0,"CHARGING!");
                 app_battery_start();
 
-				while(app_nvrecord_demo_mode_get() && hal_pwrkey_startup_pressed());//add by cai for demo mode
                 app_key_open(false);
                 app_key_init_on_charging();
 				/** add by pang **/

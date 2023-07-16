@@ -2724,7 +2724,7 @@ static void app_bt_update_connectable_mode_after_connection_management(void)
 			bt_profile_manager[1].reconnect_cnt = 0;
 			isEnterConnetableOnlyState = true;
 			app_bt_accessmode_set(BTIF_BAM_NOT_ACCESSIBLE); 
-			app_status_indication_set(APP_STATUS_INDICATION_PAGESCAN);
+			app_status_indication_set(APP_STATUS_INDICATION_AUDIO_LINEIN);
 		}
 #endif
 
@@ -3394,8 +3394,8 @@ void app_bt_profile_connect_manager_hf(enum BT_DEVICE_ID_T id, hf_chan_handle_t 
 		factory_reset_flag=0;
 		app_stop_10_second_timer(APP_POWEROFF_TIMER_ID);
 		app_start_10_second_timer(APP_AUTO_POWEROFF_TIMER_ID);
-		//app_status_indication_set(APP_STATUS_INDICATION_CONNECTED);
-		app_status_indication_set_next(APP_STATUS_INDICATION_CONNECTING,APP_STATUS_INDICATION_CONNECTED);
+		app_status_indication_set(APP_STATUS_INDICATION_CONNECTED);
+		//app_status_indication_set_next(APP_STATUS_INDICATION_CONNECTING,APP_STATUS_INDICATION_CONNECTED);
 
 		//if ((bt_profile_manager[0].reconnect_mode == bt_profile_reconnect_null)&&(bt_profile_manager[1].reconnect_mode == bt_profile_reconnect_null))
 		{
@@ -3861,8 +3861,8 @@ void app_bt_profile_connect_manager_a2dp(enum BT_DEVICE_ID_T id, a2dp_stream_t *
 		factory_reset_flag=0;
 		app_stop_10_second_timer(APP_POWEROFF_TIMER_ID);
 		app_start_10_second_timer(APP_AUTO_POWEROFF_TIMER_ID);
-		//app_status_indication_set(APP_STATUS_INDICATION_CONNECTED);
-		app_status_indication_set_next(APP_STATUS_INDICATION_CONNECTING,APP_STATUS_INDICATION_CONNECTED);
+		app_status_indication_set(APP_STATUS_INDICATION_CONNECTED);
+		//app_status_indication_set_next(APP_STATUS_INDICATION_CONNECTING,APP_STATUS_INDICATION_CONNECTED);
 
 		//if ((bt_profile_manager[0].reconnect_mode == bt_profile_reconnect_null)&&(bt_profile_manager[1].reconnect_mode == bt_profile_reconnect_null))
 		{

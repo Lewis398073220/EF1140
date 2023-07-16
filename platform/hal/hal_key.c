@@ -1250,7 +1250,7 @@ int hal_key_open(int checkPwrKey, int (* cb)(uint32_t, uint8_t))
                 goto _exit;
             }
 /** add by pang **/
-#if defined(__USE_3_5JACK_CTR__) 
+#if defined(__USE_3_5JACK_CTR__) && !defined(AUDIO_LINEIN)
 			if(hal_gpio_pin_get_val((enum  HAL_GPIO_PIN_T)PIN_3_5JACK_DETECTE)){
 				nRet = -1;
                 goto _exit;		

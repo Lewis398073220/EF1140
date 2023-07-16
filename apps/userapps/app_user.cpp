@@ -376,7 +376,7 @@ void apps_jack_event_process(void)
 		app_ble_force_switch_adv(BLE_SWITCH_USER_BT_CONNECT, false);
 #endif
 	    app_bt_accessmode_set(BTIF_BAM_NOT_ACCESSIBLE);	
-		//app_status_indication_set(APP_STATUS_INDICATION_CONNECTED);
+		app_status_indication_set(APP_STATUS_INDICATION_AUDIO_LINEIN);
 		
 #if defined(__AC107_ADC__)
 		ac107_hw_open();
