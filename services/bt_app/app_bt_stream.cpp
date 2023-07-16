@@ -6587,7 +6587,8 @@ int app_play_linein_onoff(bool onoff)
 #else
         stream_cfg.device = AUD_STREAM_USE_EXT_CODEC;
 #endif
-        stream_cfg.vol = stream_linein_volume;
+		stream_linein_volume=17;//add by pang
+        stream_cfg.vol = stream_linein_volume+17;//m by pang for volume independent
         TRACE(1,"vol = %d",stream_linein_volume);
         stream_cfg.io_path = AUD_OUTPUT_PATH_SPEAKER;
         stream_cfg.handler = app_linein_need_pcm_data;
@@ -7063,13 +7064,19 @@ int app_bt_stream_restart(APP_AUDIO_STATUS* status)
 void app_bt_stream_volumeup(void)
 {
 #if defined AUDIO_LINEIN
-    if(app_bt_stream_isrun(APP_PLAY_LINEIN_AUDIO))
+    if(app_bt_stream_isrun(APP_PLAY_LINEIN_AUDIO) || app_apps_3p5jack_plugin_flag(0))
     {
         stream_linein_volume ++;
         if (stream_linein_volume > TGT_VOLUME_LEVEL_15)
         stream_linein_volume = TGT_VOLUME_LEVEL_15;
-        app_bt_stream_volumeset(stream_linein_volume);
+        app_bt_stream_volumeset(stream_linein_volume+17);//m by pang for volume independent
         TRACE(1,"set linein volume %d\n", stream_linein_volume);
+		if(stream_linein_volume == TGT_VOLUME_LEVEL_15)
+		{
+#ifdef MEDIA_PLAYER_SUPPORT
+			app_voice_report(APP_STATUS_INDICATION_WARNING, 0);
+#endif
+		}
     }else
 #endif
     {
@@ -7191,13 +7198,19 @@ void app_bt_set_volume(uint16_t type,uint8_t level)
 void app_bt_stream_volumedown(void)
 {
 #if defined AUDIO_LINEIN
-    if(app_bt_stream_isrun(APP_PLAY_LINEIN_AUDIO))
+    if(app_bt_stream_isrun(APP_PLAY_LINEIN_AUDIO) || app_apps_3p5jack_plugin_flag(0))
     {
         stream_linein_volume --;
         if (stream_linein_volume < TGT_VOLUME_LEVEL_MUTE)
             stream_linein_volume = TGT_VOLUME_LEVEL_MUTE;
-        app_bt_stream_volumeset(stream_linein_volume);
+        app_bt_stream_volumeset(stream_linein_volume+17);//m by pang for volume independent
         TRACE(1,"set linein volume %d\n", stream_linein_volume);
+		 if(stream_linein_volume == TGT_VOLUME_LEVEL_MUTE)
+		{
+#ifdef MEDIA_PLAYER_SUPPORT
+			//app_voice_report(APP_STATUS_INDICATION_WARNING, 0);
+#endif
+		}
     }else
 #endif
     {
@@ -7330,6 +7343,11 @@ uint8_t app_bt_stream_a2dpvolume_get_user(void)//add by pang
 {
     return btdevice_volume_p->a2dp_vol;
    //return current_btdevice_volume.a2dp_vol;
+}
+
+uint8_t app_bt_stream_lineinvolume_get_user(void)//add by pang
+{
+    return stream_linein_volume;
 }
 
 uint8_t app_bt_stream_hfpvolume_get(void)
