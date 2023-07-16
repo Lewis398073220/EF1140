@@ -5437,8 +5437,8 @@ static void reconnect_timeout_handler(void const *param);
 osTimerDef(RECONNECT_TIMEOUT_TIMER, reconnect_timeout_handler);// define timers
 uint8_t reconnect_type=0;
 uint8_t reconnect_detect_num=0;
-#define OPENRECONNECT_TIMEOUT_IN_MS	(60000)//(13000)//10s   m by cai
-#define RECONNECT_TIMEOUT_IN_MS	(12000)//10000*15=120s
+#define OPENRECONNECT_TIMEOUT_IN_MS	(13000)//10s
+#define RECONNECT_TIMEOUT_IN_MS	(360000)//10000*15=120s
 
 static void reconnect_timeout_set(uint8_t rect)
 {
