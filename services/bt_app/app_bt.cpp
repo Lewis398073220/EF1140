@@ -3444,7 +3444,7 @@ void app_bt_profile_connect_manager_hf(enum BT_DEVICE_ID_T id, hf_chan_handle_t 
 #endif
 /** add by pang **/
 		if((false==bt_profile_manager[0].has_connected)&&(false==bt_profile_manager[1].has_connected)&&
-			(false==lacal_bt_off)&&(false==factory_reset_flag)&&(app_poweroff_flag==0)){
+			(false==lacal_bt_off)&&(false==factory_reset_flag)&&(app_poweroff_flag==0)&&(reconncect_null_by_user==false)){
 			app_status_indication_set(APP_STATUS_INDICATION_PAGESCAN);
 			app_start_10_second_timer(APP_POWEROFF_TIMER_ID);//m by cai
 			app_stop_10_second_timer(APP_AUTO_POWEROFF_TIMER_ID);
@@ -3910,7 +3910,7 @@ void app_bt_profile_connect_manager_a2dp(enum BT_DEVICE_ID_T id, a2dp_stream_t *
 #endif
 /** add by pang **/
 		if((false==bt_profile_manager[0].has_connected)&&(false==bt_profile_manager[1].has_connected)&&
-			(false==lacal_bt_off)&&(false==factory_reset_flag)&&(app_poweroff_flag==0)){
+			(false==lacal_bt_off)&&(false==factory_reset_flag)&&(app_poweroff_flag==0)&&(reconncect_null_by_user==false)){
 			app_status_indication_set(APP_STATUS_INDICATION_PAGESCAN);
 			app_start_10_second_timer(APP_POWEROFF_TIMER_ID);//m by cai
 			app_stop_10_second_timer(APP_AUTO_POWEROFF_TIMER_ID);

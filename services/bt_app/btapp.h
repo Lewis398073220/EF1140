@@ -138,8 +138,6 @@ extern const unsigned char a2dp_codec_elements[];
 
 //#define AVRCP_TRACK_CHANGED
 
-#define AVRCP_TRACK_CHANGED //open by pang
-
 #define AVRCP_KEY_NULL                  0
 #define AVRCP_KEY_STOP                  1
 #define AVRCP_KEY_PLAY                  2

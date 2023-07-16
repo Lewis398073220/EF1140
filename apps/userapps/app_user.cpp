@@ -25,6 +25,8 @@
 #include "hal_bootmode.h"
 #include "analog.h"
 #include "app_media_player.h"
+#include "app_audio.h"
+#include "app_ble_mode_switch.h"
 
 #ifdef BT_USB_AUDIO_DUAL_MODE
 #include "btusb_audio.h"
@@ -202,10 +204,6 @@ int app_user_event_open_module_for_charge(void)
 	app_pwm_start_timer();
 #endif
 
-#if defined(__USE_3_5JACK_CTR__)    
-	app_jack_start_timer();
-#endif
-
     return 0;
 }
 
@@ -366,25 +364,37 @@ void apps_jack_event_process(void)
 	if((in_val==CHECK_3_5JACK_MAX_NUM)&&(jack_3p5_plug_in_flag==0)){
 		TRACE(0,"***detected 3_5jack in!");
 	    reconncect_null_by_user=true;
-		//app_disconnect_all_bt_connections();
-	    //app_bt_accessmode_set(BTIF_BAM_NOT_ACCESSIBLE);	
-		//app_status_indication_set(APP_STATUS_INDICATION_CONNECTED);		
+#if defined(AUDIO_LINEIN)
+		app_stop_10_second_timer(APP_POWEROFF_TIMER_ID);//add by cai
+		app_stop_10_second_timer(APP_AUTO_POWEROFF_TIMER_ID);
+		app_audio_sendrequest(APP_BT_STREAM_INVALID, (uint8_t)APP_BT_SETTING_CLOSEALL, 0);
+		osDelay(500);
+		app_disconnect_all_bt_connections();
+		osDelay(500);
+		app_bt_reconnect_idle_mode();
+#ifdef  __IAG_BLE_INCLUDE__
+		app_ble_force_switch_adv(BLE_SWITCH_USER_BT_CONNECT, false);
+#endif
+	    app_bt_accessmode_set(BTIF_BAM_NOT_ACCESSIBLE);	
+		//app_status_indication_set(APP_STATUS_INDICATION_CONNECTED);
+		
 #if defined(__AC107_ADC__)
 		ac107_hw_open();
 		ac107_i2c_init();
 #endif
-	   hal_codec_dac_mute(1);
+
+#if defined(__AC107_ADC__)
+		osDelay(400);
+		ac107_hw_init();
+#endif		
+#else
+		hal_codec_dac_mute(1);
+		app_shutdown();//shutdown
+#endif
 		jack_3p5_plug_in_flag=1;
 		jack_count=0;
 	
 		//app_poweroff_flag = 1;
-#ifdef BT_USB_AUDIO_DUAL_MODE
-		if(app_battery_is_charging() && (get_usb_configured_status() || hal_usb_configured())) app_reset();
-		else if(!app_battery_is_charging()) app_shutdown();
-		else ;
-#else
-		app_shutdown();//shutdown
-#endif
 	} else if((out_val>CHECK_3_5JACK_MAX_NUM)&&(jack_3p5_plug_in_flag==1)){
 		TRACE(0,"***detected 3_5jack out!");
 		out_val=CHECK_3_5JACK_MAX_NUM;
@@ -393,16 +403,21 @@ void apps_jack_event_process(void)
 		jack_3p5_plug_in_flag=0;
 #if defined(AUDIO_LINEIN)
 		app_play_linein_onoff(0);
+		power_on_open_reconnect_flag=0;//add by cai
 		app_bt_profile_connect_manager_opening_reconnect();
+		app_start_10_second_timer(APP_POWEROFF_TIMER_ID);//add by cai
 #endif
 		
 #if defined(__AC107_ADC__)
 		ac107_hw_close();
 #endif
-
-#ifdef BT_USB_AUDIO_DUAL_MODE
-		if(app_battery_is_charging()) app_reset();
-		else ;
+	}
+	if(++jack_count>2){
+		jack_count=0;
+#if defined(AUDIO_LINEIN)		
+		if(!bt_media_is_media_active()&&jack_3p5_plug_in_flag){
+			app_play_linein_onoff(1);
+		}
 #endif
 	}
 	/*

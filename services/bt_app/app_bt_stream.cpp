@@ -6529,7 +6529,7 @@ uint32_t app_linein_need_pcm_data(uint8_t* pcm_buf, uint32_t len)
     bt_audio_updata_eq(app_audio_get_eq());
 #endif
 
-#if 0
+#if 1//#if 0  by pang for i2s
     int32_t *buf32 = (int32_t *)pcm_buf;
     for (uint32_t i = 0; i < len / sizeof(int32_t); i++)
         buf32[i] = (buf32[i] << 8) >> 8;
@@ -6558,7 +6558,7 @@ int app_play_linein_onoff(bool onoff)
         return 0;
 
      if (onoff){
-        app_sysfreq_req(APP_SYSFREQ_USER_APP_0, APP_SYSFREQ_104M);
+        app_sysfreq_req(APP_SYSFREQ_USER_APP_0, APP_SYSFREQ_208M);//APP_SYSFREQ_104M  m by pang
         app_overlay_select(APP_OVERLAY_A2DP);
         app_audio_mempool_init();
         app_audio_mempool_get_buff(&linein_audio_cap_buff, LINEIN_CAPTURE_BUFFER_SIZE);
@@ -6575,12 +6575,12 @@ int app_play_linein_onoff(bool onoff)
 
         memset(&stream_cfg, 0, sizeof(stream_cfg));
 
-        stream_cfg.bits = AUD_BITS_16;
+        stream_cfg.bits = AUD_BITS_24;//AUD_BITS_16; //by pang for i2s
         stream_cfg.channel_num = (enum AUD_CHANNEL_NUM_T)LINEIN_PLAYER_CHANNEL;
 #if defined(__AUDIO_RESAMPLE__)
         stream_cfg.sample_rate = AUD_SAMPRATE_50781;
 #else
-        stream_cfg.sample_rate = AUD_SAMPRATE_44100;
+        stream_cfg.sample_rate = AUD_SAMPRATE_96000;//44100 //by pang for i2s
 #endif
 #if FPGA==0
         stream_cfg.device = AUD_STREAM_USE_INT_CODEC;
@@ -6643,7 +6643,8 @@ int app_play_linein_onoff(bool onoff)
         audio_process_open(stream_cfg.sample_rate, stream_cfg.bits, stream_cfg.channel_num, stream_cfg.data_size/(stream_cfg.bits <= AUD_BITS_16 ? 2 : 4)/2, bt_eq_buff, eq_buff_size);
 
 #ifdef __SW_IIR_EQ_PROCESS__
-        bt_audio_set_eq(AUDIO_EQ_TYPE_SW_IIR,bt_audio_get_eq_index(AUDIO_EQ_TYPE_SW_IIR,0));
+        //bt_audio_set_eq(AUDIO_EQ_TYPE_SW_IIR,bt_audio_get_eq_index(AUDIO_EQ_TYPE_SW_IIR,0));
+		bt_audio_set_eq(AUDIO_EQ_TYPE_SW_IIR,bt_audio_get_eq_index(AUDIO_EQ_TYPE_SW_IIR,app_get_anc_status()));//m by pang
 #endif
 
 #ifdef __HW_FIR_EQ_PROCESS__
@@ -6695,14 +6696,14 @@ int app_play_linein_onoff(bool onoff)
 
         memset(&stream_cfg, 0, sizeof(stream_cfg));
 
-        stream_cfg.bits = AUD_BITS_16;
+        stream_cfg.bits = AUD_BITS_24;//AUD_BITS_32;//by pang for i2s
 #if defined(__AUDIO_RESAMPLE__)
         stream_cfg.sample_rate = AUD_SAMPRATE_50781;
 #else
-        stream_cfg.sample_rate = AUD_SAMPRATE_44100;
+        stream_cfg.sample_rate = AUD_SAMPRATE_96000;//by pang for i2s
 #endif
 #if FPGA==0
-        stream_cfg.device = AUD_STREAM_USE_INT_CODEC;
+        stream_cfg.device = AUD_STREAM_USE_I2S0_MASTER;
 #else
         stream_cfg.device = AUD_STREAM_USE_EXT_CODEC;
 #endif
