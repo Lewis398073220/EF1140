@@ -1910,8 +1910,10 @@ void bt_key_handle(void)
 #endif
 /** add by pang **/
 			case BTAPP_QUICK_MONIORT_KEY:
+				/*
 				if(!app_get_touchlock())
 					bt_key_handle_cover_key((enum APP_KEY_EVENT_T)bt_key.event);
+				*/
 			break;
 			
 			case BTAPP_ANC_KEY|BTAPP_FUNC_KEY:

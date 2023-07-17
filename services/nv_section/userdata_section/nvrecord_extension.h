@@ -38,7 +38,7 @@
 #define section_name_ddbrec "ddbrec"
 
 /* BT paired device info */
-#define MAX_BT_PAIRED_DEVICE_COUNT 4//8   m by cai for TAH7508
+#define MAX_BT_PAIRED_DEVICE_COUNT 8
 
 /* BLE paired device information */
 #define BLE_RECORD_NUM 5
