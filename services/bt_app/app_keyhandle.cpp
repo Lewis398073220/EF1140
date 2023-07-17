@@ -1207,7 +1207,6 @@ static void key_click_bt_off(void)
 }
 */
 
-/*
 static void bt_key_handle_game_key(void)
 {
 #ifdef __BT_ONE_BRING_TWO__	
@@ -1227,7 +1226,6 @@ static void bt_key_handle_game_key(void)
 	}
 #endif
 }
-*/
 
 static bool monitor_monent_on_flag=0;
 bool monitor_moment_is_on(void)
@@ -1328,22 +1326,13 @@ void bt_key_handle_ANC_key(APP_KEY_STATUS *status, void *param)
 			break;
 
 		case APP_KEY_EVENT_DOUBLECLICK:
-#ifdef MEDIA_PLAYER_SUPPORT
-			if(!app_bt_is_connected() || btif_me_get_activeCons()==0)
-			{
-				if(app_play_audio_get_lang() == MEDIA_DEFAULT_LANGUAGE){
-					app_voice_report(APP_STATUS_INDICATION_BEEP_22, 0);
-					app_nvrecord_language_set(1);
-				} else{
-					app_voice_report(APP_STATUS_INDICATION_BEEP_22, 0);
-					app_nvrecord_language_set(MEDIA_DEFAULT_LANGUAGE);
-				}
-			} else{
-				bt_key_handle_siri_key(APP_KEY_EVENT_DOUBLECLICK);
-			}	
-#endif
+			bt_key_handle_game_key();
 			break;
-		
+
+		case APP_KEY_EVENT_LONGPRESS:
+			bt_key_handle_siri_key(APP_KEY_EVENT_LONGPRESS);
+			break;
+			
 		default:
 			TRACE(1,"unregister down key event=%x",status->event);
 			break;

@@ -1106,7 +1106,7 @@ extern "C" void avrcp_callback_CT(btif_avrcp_chnl_handle_t chnl, const avrcp_cal
                     else{
                         app_bt_device.a2dp_play_pause_flag = 1;
 						Notification_Playback_Status_Change(1);//add by cai
-						app_status_indication_set_next(APP_STATUS_INDICATION_A2DP,APP_STATUS_INDICATION_CONNECTED);//m by cai
+						//app_status_indication_set_next(APP_STATUS_INDICATION_A2DP,APP_STATUS_INDICATION_CONNECTED);//m by cai
                     }
                     if(is_a2dp_streaming !=0){
                         if(avrcp_palyback_status[device_id] == 1) /*&&
@@ -1147,7 +1147,7 @@ extern "C" void avrcp_callback_CT(btif_avrcp_chnl_handle_t chnl, const avrcp_cal
                     if(btif_get_avrcp_adv_notify(parms)->p.mediaStatus == 0x1) {
                         app_bt_device.a2dp_play_pause_flag = 1;
 						Notification_Playback_Status_Change(1);//add by cai
-						app_status_indication_set_next(APP_STATUS_INDICATION_A2DP,APP_STATUS_INDICATION_CONNECTED);//m by cai
+						//app_status_indication_set_next(APP_STATUS_INDICATION_A2DP,APP_STATUS_INDICATION_CONNECTED);//m by cai
                     } else if(btif_get_avrcp_adv_notify(parms)->p.mediaStatus == 0x0||btif_get_avrcp_adv_notify(parms)->p.mediaStatus == 0x2){
                         app_bt_device.a2dp_play_pause_flag = 0;
 						Notification_Playback_Status_Change(0);//add by cai
