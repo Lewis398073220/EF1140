@@ -7206,7 +7206,8 @@ void app_bt_stream_volumedown(void)
 #if defined AUDIO_LINEIN
     if(app_bt_stream_isrun(APP_PLAY_LINEIN_AUDIO) || app_apps_3p5jack_plugin_flag(0))
     {
-        stream_linein_volume --;
+        //stream_linein_volume --;
+		stream_linein_volume -= 2;//m by cai
         if (stream_linein_volume < TGT_VOLUME_LEVEL_MUTE)
             stream_linein_volume = TGT_VOLUME_LEVEL_MUTE;
         app_bt_stream_volumeset(stream_linein_volume+17);//m by pang for volume independent
