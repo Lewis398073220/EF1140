@@ -2318,15 +2318,18 @@ extern int rpc_service_setup(void);
 #endif
 #if defined( __BTIF_EARPHONE__) && defined(__BTIF_BT_RECONNECT__)
 #if !defined(IBRT)
-#if !defined(__DEFINE_DEMO_MODE__)//m by cai
-		power_on_open_reconnect_flag=1;//add by pang
-        app_bt_profile_connect_manager_opening_reconnect();
+
+#if defined(__AC107_ADC__)//m by cai
+		if(!apps_3p5_jack_get_val())
+		{
+			power_on_open_reconnect_flag=1;//add by pang
+			app_bt_profile_connect_manager_opening_reconnect();
+		}		
 #else
-		if(app_demo_mode_poweron_flag_get() || !app_battery_is_charging()) {
 		power_on_open_reconnect_flag=1;//add by pang
         app_bt_profile_connect_manager_opening_reconnect();
-		}
 #endif
+
 #endif
 #endif
 /** add by pang **/
@@ -2515,8 +2518,18 @@ extern int rpc_service_setup(void);
                 default:
                     //app_status_indication_set(APP_STATUS_INDICATION_PAGESCAN);
 #if defined( __BTIF_EARPHONE__) && defined(__BTIF_BT_RECONNECT__) && !defined(IBRT)
+
+#if defined(__AC107_ADC__)//m by cai
+					if(!apps_3p5_jack_get_val())
+					{
+						power_on_open_reconnect_flag=0;//add by pang
+						app_bt_profile_connect_manager_opening_reconnect();
+					}		
+#else
 					power_on_open_reconnect_flag=0;//add by pang
-                    app_bt_profile_connect_manager_opening_reconnect();
+					app_bt_profile_connect_manager_opening_reconnect();
+#endif
+
 #endif
 #ifdef __THIRDPARTY
                     app_thirdparty_specific_lib_event_handle(THIRDPARTY_FUNC_NO2,THIRDPARTY_BT_CONNECTABLE);
