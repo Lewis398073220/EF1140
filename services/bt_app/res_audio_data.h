@@ -18,12 +18,12 @@
 
 const uint8_t EN_POWER_ON [] = {
 //#include "res/en/SOUND_POWER_ON.txt"
-#include "res/en/EN_PowerOn_16000.txt"
+#include "res/en/EF1140_Powering_On_16000.txt"
 };
 
 const uint8_t EN_POWER_OFF [] = {
 //#include "res/en/SOUND_POWER_OFF.txt"
-#include "res/en/EN_PowerOFF_16000.txt"
+#include "res/en/EF1140_Powering_Off_16000.txt"
 };
 
 const uint8_t EN_SOUND_ZERO[] = {
@@ -68,7 +68,7 @@ const uint8_t EN_SOUND_NINE [] = {
 
 const uint8_t EN_BT_PAIR_ENABLE[] = {
 //#include "res/en/SOUND_PAIR_ENABLE.txt"
-#include "res/en/EN_Pairing_16000.txt"
+#include "res/en/EF1140_Pairing_16000.txt"
 };
 
 const uint8_t EN_BT_PAIRING[] = {
@@ -101,12 +101,12 @@ const uint8_t EN_BT_HUNG_UP[] = {
 
 const uint8_t EN_BT_CONNECTED [] = {
 //#include "res/en/SOUND_CONNECTED.txt"
-#include "res/en/EN_Connected_16000.txt"
+#include "res/en/EF1140_Connected_16000.txt"
 };
 
 const uint8_t EN_BT_DIS_CONNECT [] = {
 //#include "res/en/SOUND_DIS_CONNECT.txt"
-#include "res/en/EN_Disconnected_16000.txt"
+#include "res/en/EF1140_Disonnected_16000.txt"
 };
 
 const uint8_t EN_BT_INCOMING_CALL [] = {
@@ -116,7 +116,7 @@ const uint8_t EN_BT_INCOMING_CALL [] = {
 
 const uint8_t EN_CHARGE_PLEASE[] = {
 //#include "res/en/SOUND_CHARGE_PLEASE.txt"
-#include "res/en/EN_Battery_low_16000.txt"
+#include "res/en/EF1140_Battery_Low_16000.txt"
 };
 
 const uint8_t EN_CHARGE_FINISH[] = {
@@ -170,7 +170,7 @@ const uint8_t EN_BT_BEEP_22[] = {
 };
 
 const uint8_t EN_POWEROFF_LOWBATTERY[] = {
-#include "res/en/EN_PowerOFF_16000.txt"
+#include "res/en/EF1140_Powering_Off_16000.txt"
 };
 
 const uint8_t EN_DEMO_MODE[] = {
@@ -197,27 +197,27 @@ const uint8_t EN_BT_VOL_MAX[] = {
 
 const uint8_t EN_BT_FACTORY_RESET[] = {
 //#include "res/en/Tone_16000.txt"
-#include "res/en/EN_beep22_16000.txt"
+#include "res/en/EF1140_Factory_Reset_16000.txt"
 };
 
 const uint8_t EN_BT_ANC_ON[] = {
-#include "res/en/EN_ANC_ON_16000.txt"
+#include "res/en/EF1140_ANC_On_16000.txt"
 };
 
 const uint8_t EN_BT_MONITOR_ON[] = {
-#include "res/en/EN_Awareness_16000.txt"
+#include "res/en/EF1140_Ambient_Mode_16000.txt"
 };
 
 const uint8_t EN_BT_ANC_OFF[] = {
-#include "res/en/EN_ANC_OFF_16000.txt"
+#include "res/en/EF1140_ANC_Off_16000.txt"
 };
 
 const uint8_t EN_BT_GAMING_ON[] = {
-#include "res/en/Gaming_on_16000.txt"
+#include "res/en/EF1140_Game_Mode_On_16000.txt"
 };
 
 const uint8_t EN_BT_GAMING_OFF[] = {
-#include "res/en/Gaming_off_16000.txt"
+#include "res/en/EF1140_Game_Mode_Off_16000.txt"
 };
 
 const uint8_t EN_BT_LINK_LOST_OF_RANGE[] = {
