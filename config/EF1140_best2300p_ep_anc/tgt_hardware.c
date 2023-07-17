@@ -575,7 +575,7 @@ static const struct_anc_cfg POSSIBLY_UNUSED AncFirCoef_48k_Anc_High = {
     .anc_cfg_ff_l = {
        // .total_gain = 440,
 		.total_gain = 312,
-xxx
+
 		.iir_bypass_flag=0,
 		.iir_counter=IIR_COUNTER_FF_L,
 
