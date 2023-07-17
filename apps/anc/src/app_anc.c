@@ -275,15 +275,15 @@ void poweron_set_anc(void)
 		anc_current_status = anc_on;
 		anc_on_mode = anc_wind;
 	}
-	else {
-		anc_current_status = anc_on;
-		if(app_nvrecord_anc_table_get() == ANC_HIGH)
-			anc_on_mode = anc_high;
-		else if(app_nvrecord_anc_table_get() == ANC_LOW)
-			anc_on_mode = anc_low;
-		else anc_on_mode = anc_wind;
+	else if(anc_mode_poweron == MONITOR_ON){
+		anc_current_status = monitor;
+		app_set_monitor_mode(app_get_monitor_level());
 	}
-
+	else {
+		anc_current_status = anc_off;
+	}
+	
+	app_set_anc_on_mode(app_nvrecord_anc_table_get());
 	app_set_monitor_mode(app_get_monitor_level());
 	set_anc_mode(anc_current_status, 0);	
 }
@@ -2079,6 +2079,8 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 	if(power_anc_init){
 		power_anc_init=0;
 	}
+
+	app_nvrecord_anc_set(app_get_anc_mode_status());
 	//#if defined(__TPV_APP__)
 	Notification_Nosie_Cancelling_Change();
 	//#endif

@@ -2039,9 +2039,9 @@ void app_nvrecord_para_default(void)
 
 	sleep_time=DEFAULT_SLEEP_TIME;
 	eq_set_index=0;
-	anc_set_index=ANC_HIGH;
+	anc_set_index=NC_OFF;
 	monitor_level=20;
-	app_set_anc_on_mode(ANC_HIGH);
+	app_set_anc_on_mode(NC_OFF);
 	focus_on=0;
 	touch_lock=0;
 	sidetone=0;
@@ -2082,7 +2082,7 @@ void app_nvrecord_para_default(void)
     nv_record_flash_flush();
 #endif
 
-	set_anc_mode(anc_on,0);
+	set_anc_mode(anc_off,0);
 	app_gaming_mode(0);
 	change_eq_from_ble_api(0);
 }

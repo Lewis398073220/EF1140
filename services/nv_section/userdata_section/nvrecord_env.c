@@ -47,7 +47,7 @@ void nvrecord_rebuild_system_env(struct nvrecord_env_t* pSystemEnv)
 	pSystemEnv->sleep_time = DEFAULT_SLEEP_TIME;
 	pSystemEnv->vibrate_mode = 1;
 	pSystemEnv->eq_mode = 0;
-	pSystemEnv->anc_mode = ANC_HIGH;
+	pSystemEnv->anc_mode = NC_OFF;
 	pSystemEnv->monitor_level = 20;//10
 	pSystemEnv->focus_on = 0;
 	pSystemEnv->sensor_enable = 1;
