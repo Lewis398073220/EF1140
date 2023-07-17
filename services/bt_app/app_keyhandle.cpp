@@ -873,8 +873,10 @@ void bt_key_handle_func_click(void)
         case HFCALL_MACHINE_CURRENT_IDLE_ANOTHER_IDLE:
         {
             if(app_bt_device.a2dp_play_pause_flag == 0){
+				app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);
                 a2dp_handleKey(AVRCP_KEY_PLAY);
             }else{
+				app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);
                 a2dp_handleKey(AVRCP_KEY_PAUSE);
             }
         }

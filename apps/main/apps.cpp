@@ -678,6 +678,14 @@ int app_voice_report_handler(APP_STATUS_INDICATION_T status, uint8_t device_id, 
                 id = AUD_ID_BEEP_22;
                 break;
 
+			case APP_STATUS_INDICATION_SINGLE_BEEP:
+				id = AUD_ID_SINGLE_BEEP;
+				break;
+
+			case APP_STATUS_INDICATION_DOUBLE_BEEP:
+				id = AUD_ID_DOUBLE_BEEP;
+				break;		
+
 			case APP_STATUS_INDICATION_DEMO_MODE:
                 id = AUD_ID_DEMO_MODE;
                 break;

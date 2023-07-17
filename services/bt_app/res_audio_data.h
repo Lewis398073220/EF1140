@@ -169,6 +169,14 @@ const uint8_t EN_BT_BEEP_22[] = {
 #include "res/en/EN_beep22_16000.txt"
 };
 
+const uint8_t EN_BT_SINGLE_BEEP[] = {
+#include "res/en/EF1140_Single_Beep_Tone_16000.txt"
+};
+
+const uint8_t EN_BT_DOUBLE_BEEP[] = {
+#include "res/en/EF1140_Double_Beep_Tone_16000.txt"
+};
+
 const uint8_t EN_POWEROFF_LOWBATTERY[] = {
 #include "res/en/EF1140_Powering_Off_16000.txt"
 };

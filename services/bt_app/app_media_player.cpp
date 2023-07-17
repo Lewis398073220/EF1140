@@ -731,6 +731,16 @@ void media_runtime_audio_prompt_update(uint16_t id, uint8_t** ptr, uint32_t* len
         	g_app_audio_length = (g_language==MEDIA_DEFAULT_LANGUAGE)? sizeof(EN_BT_BEEP_22): sizeof(EN_BT_BEEP_22);
 			break;
 
+		case AUD_ID_SINGLE_BEEP:
+			g_app_audio_data = (U8*)EN_BT_SINGLE_BEEP;
+			g_app_audio_length = sizeof(EN_BT_SINGLE_BEEP);
+		    break;
+			
+		case AUD_ID_DOUBLE_BEEP:
+			g_app_audio_data = (U8*)EN_BT_DOUBLE_BEEP;
+			g_app_audio_length = sizeof(EN_BT_DOUBLE_BEEP);
+		    break;
+			
 		case AUD_ID_POWEROFF_LOWBATTERY:
 			g_app_audio_data = (g_language==MEDIA_DEFAULT_LANGUAGE)? (U8*)EN_POWEROFF_LOWBATTERY: (U8*)EN_POWEROFF_LOWBATTERY;
 			g_app_audio_length = (g_language==MEDIA_DEFAULT_LANGUAGE)? sizeof(EN_POWEROFF_LOWBATTERY): sizeof(EN_POWEROFF_LOWBATTERY);

@@ -74,6 +74,8 @@ const char *app_status_indication_str[] =
 	
 	"[BEEP_21]",
 	"[BEEP_22]",
+	"[SINGLE_BEEP]",
+	"[DOUBLE_BEEP]",
 	"[POWEROFF_LOWBATTERY]",
 	"[DEMO_MODE]",
 	"[A2DP]",

@@ -380,6 +380,8 @@ const char *aud_id_str[] =
 
 	"[BEEP_21]",
 	"[BEEP_22]",
+	"[SINGLE_BEEP]",
+	"[DOUBLE_BEEP]",
 	"[POWEROFF_LOWBATTERY]",
 	"[DEMO_MODE]",
 	"[CALLING_MUTE]",

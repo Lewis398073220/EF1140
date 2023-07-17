@@ -319,7 +319,7 @@ static uint32_t codec_playback_cnt = 0;
 #endif
 int8_t stream_local_volume = (AUDIO_OUTPUT_VOLUME_DEFAULT);
 #ifdef AUDIO_LINEIN
-int8_t stream_linein_volume = (AUDIO_OUTPUT_VOLUME_DEFAULT);
+int8_t stream_linein_volume = 17;//(AUDIO_OUTPUT_VOLUME_DEFAULT);   m by cai
 #endif
 
 struct btdevice_volume *btdevice_volume_p;
@@ -6587,7 +6587,7 @@ int app_play_linein_onoff(bool onoff)
 #else
         stream_cfg.device = AUD_STREAM_USE_EXT_CODEC;
 #endif
-		stream_linein_volume=17;//add by pang
+		//stream_linein_volume=17;//add by pang
         stream_cfg.vol = stream_linein_volume+17;//m by pang for volume independent
         TRACE(1,"vol = %d",stream_linein_volume);
         stream_cfg.io_path = AUD_OUTPUT_PATH_SPEAKER;
@@ -7071,10 +7071,14 @@ void app_bt_stream_volumeup(void)
         stream_linein_volume = TGT_VOLUME_LEVEL_15;
         app_bt_stream_volumeset(stream_linein_volume+17);//m by pang for volume independent
         TRACE(1,"set linein volume %d\n", stream_linein_volume);
+		if (stream_linein_volume < TGT_VOLUME_LEVEL_15)
+        {
+       		app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
+        }
 		if(stream_linein_volume == TGT_VOLUME_LEVEL_15)
 		{
 #ifdef MEDIA_PLAYER_SUPPORT
-			app_voice_report(APP_STATUS_INDICATION_WARNING, 0);
+			app_voice_report(APP_STATUS_INDICATION_DOUBLE_BEEP, 0);
 #endif
 		}
     }else
@@ -7096,6 +7100,7 @@ void app_bt_stream_volumeup(void)
             current_btdevice_volume.hfp_vol=updatedVol;
             if (updatedVol < TGT_VOLUME_LEVEL_15)
             {
+           		app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
                 app_bt_stream_volumeset(updatedVol);
             }
             if (btdevice_volume_p->hfp_vol == TGT_VOLUME_LEVEL_15)
@@ -7103,7 +7108,7 @@ void app_bt_stream_volumeup(void)
 #ifdef MEDIA_PLAYER_SUPPORT
                 //media_PlayAudio(AUD_ID_BT_WARNING,0);               
 				//app_ring_merge_set(APP_STATUS_INDICATION_WARNING);
-				app_voice_report(APP_STATUS_INDICATION_WARNING,0);//m by cai
+				app_voice_report(APP_STATUS_INDICATION_DOUBLE_BEEP,0);//m by cai
 #if defined(__USE_AMP_MUTE_CTR__)
 				 if(!hal_gpio_pin_get_val((enum HAL_GPIO_PIN_T)cfg_hw_pio_AMP_mute_control.pin))
 			   		hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_hw_pio_AMP_mute_control.pin);
@@ -7128,6 +7133,7 @@ void app_bt_stream_volumeup(void)
             current_btdevice_volume.a2dp_vol=updatedVol;
             if (updatedVol < TGT_VOLUME_LEVEL_15)
             {
+            	app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
                 app_bt_stream_volumeset(updatedVol+17);//m by pang for volume independent
             }
             if (btdevice_volume_p->a2dp_vol == TGT_VOLUME_LEVEL_15)
@@ -7135,7 +7141,7 @@ void app_bt_stream_volumeup(void)
 #ifdef MEDIA_PLAYER_SUPPORT
                 //media_PlayAudio(AUD_ID_BT_WARNING,0);   
 				//app_ring_merge_set(APP_STATUS_INDICATION_WARNING);
-				app_voice_report(APP_STATUS_INDICATION_WARNING,0);//m by cai
+				app_voice_report(APP_STATUS_INDICATION_DOUBLE_BEEP,0);//m by cai
 #if defined(__USE_AMP_MUTE_CTR__)
 			   if(!hal_gpio_pin_get_val((enum HAL_GPIO_PIN_T)cfg_hw_pio_AMP_mute_control.pin))
 			   		hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_hw_pio_AMP_mute_control.pin);
@@ -7205,10 +7211,14 @@ void app_bt_stream_volumedown(void)
             stream_linein_volume = TGT_VOLUME_LEVEL_MUTE;
         app_bt_stream_volumeset(stream_linein_volume+17);//m by pang for volume independent
         TRACE(1,"set linein volume %d\n", stream_linein_volume);
-		 if(stream_linein_volume == TGT_VOLUME_LEVEL_MUTE)
+		if (stream_linein_volume > TGT_VOLUME_LEVEL_MUTE)
+        {
+       		app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
+        }
+		if(stream_linein_volume == TGT_VOLUME_LEVEL_MUTE)
 		{
 #ifdef MEDIA_PLAYER_SUPPORT
-			//app_voice_report(APP_STATUS_INDICATION_WARNING, 0);
+			app_voice_report(APP_STATUS_INDICATION_DOUBLE_BEEP, 0);//m by cai
 #endif
 		}
     }else
@@ -7232,11 +7242,18 @@ void app_bt_stream_volumedown(void)
             nv_record_post_write_operation(lock);
             current_btdevice_volume.hfp_vol=updatedVol;
             app_bt_stream_volumeset(updatedVol);
+			/** add by cai **/
+			if (btdevice_volume_p->hfp_vol > TGT_VOLUME_LEVEL_0)
+			{
+				app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
+			}
+			/** end add **/
             if (btdevice_volume_p->hfp_vol == TGT_VOLUME_LEVEL_0)
             {
 #ifdef MEDIA_PLAYER_SUPPORT
                 //media_PlayAudio(AUD_ID_BT_WARNING,0); 
 				//app_ring_merge_set(APP_STATUS_INDICATION_WARNING);
+				app_voice_report(APP_STATUS_INDICATION_DOUBLE_BEEP, 0);//add by cai
 #if defined(__USE_AMP_MUTE_CTR__)
 				 if(!hal_gpio_pin_get_val((enum HAL_GPIO_PIN_T)cfg_hw_pio_AMP_mute_control.pin))
 			   		hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_hw_pio_AMP_mute_control.pin);
@@ -7259,11 +7276,18 @@ void app_bt_stream_volumedown(void)
             nv_record_post_write_operation(lock);
             current_btdevice_volume.a2dp_vol=updatedVol;
             app_bt_stream_volumeset(updatedVol+17);//m by pang for volume independent
+            /** add by cai **/
+			if (btdevice_volume_p->a2dp_vol > TGT_VOLUME_LEVEL_MUTE)
+			{
+				app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
+			}
+			/** end add **/
             if (btdevice_volume_p->a2dp_vol == TGT_VOLUME_LEVEL_MUTE)
             {
 #ifdef MEDIA_PLAYER_SUPPORT
                 //media_PlayAudio(AUD_ID_BT_WARNING,0);
 				//app_ring_merge_set(APP_STATUS_INDICATION_WARNING);
+				app_voice_report(APP_STATUS_INDICATION_DOUBLE_BEEP, 0);//add by cai
 #if defined(__USE_AMP_MUTE_CTR__)
 				 if(!hal_gpio_pin_get_val((enum HAL_GPIO_PIN_T)cfg_hw_pio_AMP_mute_control.pin))
 			   		hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_hw_pio_AMP_mute_control.pin);
