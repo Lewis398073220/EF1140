@@ -7375,6 +7375,11 @@ uint8_t app_bt_stream_lineinvolume_get_user(void)//add by pang
     return stream_linein_volume;
 }
 
+void app_bt_stream_lineinvolume_set_user(int8_t linein_vol)//add by cai
+{
+    stream_linein_volume = linein_vol;
+}
+
 uint8_t app_bt_stream_hfpvolume_get(void)
 {
     //return btdevice_volume_p->hfp_vol;

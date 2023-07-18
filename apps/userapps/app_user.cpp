@@ -386,6 +386,7 @@ void apps_jack_event_process(void)
 #if defined(__AC107_ADC__)
 		osDelay(400);
 		ac107_hw_init();
+		app_bt_stream_lineinvolume_set_user(17);//add by cai
 #endif		
 #else
 		hal_codec_dac_mute(1);
