@@ -207,7 +207,7 @@ const struct CODEC_DAC_VOL_T codec_dac_vol[] = {
     {TX_PA_GAIN,0x03, -10},
     {TX_PA_GAIN,0x03, -7},
     {TX_PA_GAIN,0x03, -4},
-    {TX_PA_GAIN,0x03, -1},
+    {TX_PA_GAIN,0x03,  0},
 };
 
 #if SPEECH_CODEC_CAPTURE_CHANNEL_NUM == 2
