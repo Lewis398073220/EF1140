@@ -7073,7 +7073,7 @@ void app_bt_stream_volumeup(void)
         TRACE(1,"set linein volume %d\n", stream_linein_volume);
 		if (stream_linein_volume < TGT_VOLUME_LEVEL_15)
         {
-       		app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
+       		//app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
         }
 		if(stream_linein_volume == TGT_VOLUME_LEVEL_15)
 		{
@@ -7100,7 +7100,7 @@ void app_bt_stream_volumeup(void)
             current_btdevice_volume.hfp_vol=updatedVol;
             if (updatedVol < TGT_VOLUME_LEVEL_15)
             {
-           		app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
+           		//app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
                 app_bt_stream_volumeset(updatedVol);
             }
             if (btdevice_volume_p->hfp_vol == TGT_VOLUME_LEVEL_15)
@@ -7133,7 +7133,7 @@ void app_bt_stream_volumeup(void)
             current_btdevice_volume.a2dp_vol=updatedVol;
             if (updatedVol < TGT_VOLUME_LEVEL_15)
             {
-            	app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
+            	//app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
                 app_bt_stream_volumeset(updatedVol+17);//m by pang for volume independent
             }
             if (btdevice_volume_p->a2dp_vol == TGT_VOLUME_LEVEL_15)
@@ -7214,7 +7214,7 @@ void app_bt_stream_volumedown(void)
         TRACE(1,"set linein volume %d\n", stream_linein_volume);
 		if (stream_linein_volume > TGT_VOLUME_LEVEL_MUTE)
         {
-       		app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
+       		//app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
         }
 		if(stream_linein_volume == TGT_VOLUME_LEVEL_MUTE)
 		{
@@ -7246,7 +7246,7 @@ void app_bt_stream_volumedown(void)
 			/** add by cai **/
 			if (btdevice_volume_p->hfp_vol > TGT_VOLUME_LEVEL_0)
 			{
-				app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
+				//app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
 			}
 			/** end add **/
             if (btdevice_volume_p->hfp_vol == TGT_VOLUME_LEVEL_0)
@@ -7280,7 +7280,7 @@ void app_bt_stream_volumedown(void)
             /** add by cai **/
 			if (btdevice_volume_p->a2dp_vol > TGT_VOLUME_LEVEL_MUTE)
 			{
-				app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
+				//app_voice_report(APP_STATUS_INDICATION_SINGLE_BEEP, 0);//add by cai
 			}
 			/** end add **/
             if (btdevice_volume_p->a2dp_vol == TGT_VOLUME_LEVEL_MUTE)
