@@ -3583,7 +3583,7 @@ const IIR_CFG_T audio_eq_sw_iir_cfg_anc_off =
 		{IIR_TYPE_PEAK,   	 1,2000, 0.8},
 		{IIR_TYPE_PEAK,   	-5,4500, 3.0},
 		{IIR_TYPE_PEAK,    -10,6700, 1.3},
-		{IIR_TYPE_PEAK,   	-6,15000, 0.8},
+		{IIR_TYPE_PEAK,   	-6,15000,0.8},
 		{IIR_TYPE_PEAK,   	 3,2800, 3},
 		#endif
     }
