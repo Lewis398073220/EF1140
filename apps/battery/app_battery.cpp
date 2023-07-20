@@ -772,21 +772,7 @@ int app_battery_open(void)
 #if (CHARGER_PLUGINOUT_RESET == 0)
         nRet = APP_BATTERY_OPEN_MODE_CHARGING_PWRON;
 #else
-	#if defined(__DEFINE_DEMO_MODE__)
-		if(app_nvrecord_demo_mode_get()){ //add by pang
-			if (hal_sw_bootmode_get() & HAL_SW_BOOTMODE_CHARGING_POWEROFF || hal_gpio_pin_get_val((enum HAL_GPIO_PIN_T)cfg_hw_pio_3p5_jack_detecter.pin)){//m by cai
-				nRet = APP_BATTERY_OPEN_MODE_CHARGING;
-			}
-			else if (hal_sw_bootmode_get() & HAL_SW_BOOTMODE_CHARGING_POWERON){
-				nRet = APP_BATTERY_OPEN_MODE_NORMAL;
-			}
-			else {
-				nRet = APP_BATTERY_OPEN_MODE_CHARGING_PWRON;
-			}
-		}
-		else
-	#endif
-           nRet = APP_BATTERY_OPEN_MODE_CHARGING;
+        nRet = APP_BATTERY_OPEN_MODE_CHARGING;
 #endif
     }
     else
@@ -800,10 +786,6 @@ int app_battery_open(void)
 	ntc_capture_open();//add by pang
 #endif
 
-#if defined(__DEFINE_DEMO_MODE__)
-	hal_sw_bootmode_clear(HAL_SW_BOOTMODE_CHARGING_POWEROFF);//add by pang
-	hal_sw_bootmode_clear(HAL_SW_BOOTMODE_CHARGING_POWERON);
-#endif
     return nRet;
 }
 

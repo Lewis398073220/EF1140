@@ -991,19 +991,7 @@ void app_bt_key_shutdown(APP_KEY_STATUS *status, void *param)
     hal_sw_bootmode_clear(HAL_SW_BOOTMODE_REBOOT);
     app_reset();
 #else
-    
-#if defined(__DEFINE_DEMO_MODE__)//add by pang
-	if(app_battery_is_charging() && app_nvrecord_demo_mode_get()){
-		TRACE(0,"power off->charging!!!");
-		hal_sw_bootmode_set(HAL_SW_BOOTMODE_CHARGING_POWEROFF);
-		app_reset();
-	}
-	else{
-		if(!app_call_status_get()) app_shutdown();//m by cai for not to power off when call is active
-	}
-#else
 	if(!app_call_status_get()) app_shutdown();//m by cai for not to power off when call is active
-#endif
 #endif
 }
 
@@ -1495,6 +1483,7 @@ void app_key_init(void)
     }
 #endif
 }
+
 /** add by pang **/
 #if defined(__DEFINE_DEMO_MODE__)
 void app_charging_poweron_key_handler(APP_KEY_STATUS *status, void *param)
@@ -1502,7 +1491,6 @@ void app_charging_poweron_key_handler(APP_KEY_STATUS *status, void *param)
 	TRACE(0,"%s ",__func__);
 	if(app_nvrecord_demo_mode_get() && !hal_gpio_pin_get_val((enum HAL_GPIO_PIN_T)cfg_hw_pio_3p5_jack_detecter.pin))//m by cai
 	{
-		//hal_sw_bootmode_clear(HAL_SW_BOOTMODE_REBOOT);//add by cai
 		hal_sw_bootmode_set(HAL_SW_BOOTMODE_CHARGING_POWERON);
 		hal_cmu_sys_reboot();
 	}
@@ -2080,15 +2068,6 @@ extern int rpc_service_setup(void);
         switch (nRet) {
             case APP_BATTERY_OPEN_MODE_NORMAL:
                 nRet = 0;
-#if defined(__DEFINE_DEMO_MODE__)
-				if(app_nvrecord_demo_mode_get()) 
-				{
-					app_demo_mode_poweron_flag_set(true);//add by cai
-#if defined(__CHARGE_CURRRENT__)
-					hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_charge_current_control.pin);//add by cai
-#endif
-				}
-#endif
                 break;
             case APP_BATTERY_OPEN_MODE_CHARGING:
                 app_status_indication_set(APP_STATUS_INDICATION_CHARGING);
@@ -2137,15 +2116,6 @@ extern int rpc_service_setup(void);
 #endif
                 need_check_key = false;
                 nRet = 0;
-#if defined(__DEFINE_DEMO_MODE__)
-				app_demo_mode_poweron_flag_set(true);//add by pang
-#if defined(__CHARGE_CURRRENT__)
-				hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_charge_current_control.pin);//add by cai
-#endif
-#endif
-#if defined(BT_USB_AUDIO_DUAL_MODE)
-				usb_plugin = 1;//add by cai
-#endif
                 break;
             case APP_BATTERY_OPEN_MODE_INVALID:
             default:
@@ -2256,25 +2226,9 @@ extern int rpc_service_setup(void);
 /** end add **/
 
     if (pwron_case == APP_POWERON_CASE_REBOOT){
-#if !defined(__DEFINE_DEMO_MODE__)//m by cai
         app_status_indication_set(APP_STATUS_INDICATION_POWERON);
 #ifdef MEDIA_PLAYER_SUPPORT
         app_voice_report(APP_STATUS_INDICATION_POWERON, 0);
-#endif
-#else
-/** add by pang **/
-		if(app_demo_mode_poweron_flag_get() || !app_battery_is_charging()){
-			app_status_indication_recover_set(APP_STATUS_INDICATION_POWERON);//m by cai
-#ifdef ANC_APP
-			//poweron_set_anc();//add by cai for Pairing tone distortion
-#endif
-
-#ifdef MEDIA_PLAYER_SUPPORT
-			app_voice_report(APP_STATUS_INDICATION_POWERON, 0);
-#endif
-		}
-/** end add **/
-
 #endif
         app_bt_start_custom_function_in_bt_thread((uint32_t)1,
                     0, (uint32_t)btif_me_write_bt_sleep_enable);
@@ -2392,29 +2346,7 @@ extern int rpc_service_setup(void);
         }
         else
         {
-#if !defined(__DEFINE_DEMO_MODE__)//m by cai
             pwron_case = APP_POWERON_CASE_NORMAL;
-#else
-        	if(app_battery_is_charging() && !app_demo_mode_poweron_flag_get()) {
-				pwron_case = APP_POWERON_CASE_USB_AUDIO;
-			} else{
-				pwron_case = APP_POWERON_CASE_NORMAL;
-/** add by pang **/
-#if defined(__DEFINE_DEMO_MODE__)
-				if(app_demo_mode_poweron_flag_get()){
-					app_status_indication_recover_set(APP_STATUS_INDICATION_POWERON);//m by cai
-#ifdef ANC_APP
-					//poweron_set_anc();//add by cai for Pairing tone distortion
-#endif
-
-#ifdef MEDIA_PLAYER_SUPPORT
-					app_voice_report(APP_STATUS_INDICATION_POWERON, 0);
-#endif
-				}
-#endif
-/** end add **/
-			} 
-#endif
         }
         if (pwron_case != APP_POWERON_CASE_INVALID && pwron_case != APP_POWERON_CASE_DITHERING){
             AUTO_TEST_TRACE(1,"power on case:%d\n", pwron_case);
