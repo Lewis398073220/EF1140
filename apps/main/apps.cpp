@@ -1573,6 +1573,10 @@ int app_deinit(int deinit_case)
         app_poweroff_flag = 1;
 		/** add by pang **/	
 		app_user_event_close_module();
+#if defined(AUDIO_LINEIN)
+		if(app_apps_3p5jack_plugin_flag(0))
+			app_play_linein_onoff(0);//add by cai
+#endif
 		app_anc_power_off();
 		/** end add **/
 #if defined(APP_LINEIN_A2DP_SOURCE)
@@ -1592,7 +1596,7 @@ int app_deinit(int deinit_case)
 			app_status_indication_recover_set(APP_STATUS_INDICATION_POWEROFF);
 		}
 		
-		if((!app_battery_is_charging())&&(!app_apps_3p5jack_plugin_flag(0))){
+		if((!app_battery_is_charging())){
 #ifdef MEDIA_PLAYER_SUPPORT
 	        if(app_battery_is_pdvolt()){
 				app_voice_report(APP_STATUS_INDICATION_POWEROFF_LOWBATTERY, 0);//add by pang
