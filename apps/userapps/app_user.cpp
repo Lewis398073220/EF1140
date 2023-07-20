@@ -2042,7 +2042,7 @@ void app_nvrecord_para_default(void)
 	eq_set_index=0;
 	anc_set_index=NC_OFF;
 	monitor_level=20;
-	app_set_anc_on_mode(NC_OFF);
+	app_set_anc_on_mode(ANC_HIGH);
 	focus_on=0;
 	touch_lock=0;
 	sidetone=0;

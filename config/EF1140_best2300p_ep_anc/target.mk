@@ -14,6 +14,8 @@ KERNEL      ?= RTX
 
 #export SPEECH_SIDETONE ?= 1
 
+export USER_REBOOT_PLAY_MUSIC_AUTO ?= 1
+
 #add by pang
 CALIB_SLOW_TIMER ?= 0
 

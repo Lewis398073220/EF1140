@@ -2083,22 +2083,9 @@ extern int rpc_service_setup(void);
 #endif
 				/** end add **/
                 nRet = 0;
-#if defined(__USE_3_5JACK_CTR__)
-				if(hal_gpio_pin_get_val((enum HAL_GPIO_PIN_T)cfg_hw_pio_3p5_jack_detecter.pin) || app_nvrecord_demo_mode_get()) 
-				{
-#if defined(__LDO_3V3_CTR__) 
-					hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_hw_pio_3_3v_control.pin);//add by cai for usb audio
-#endif
-
-#if defined(__CHARGE_CURRRENT__)
-					hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_charge_current_control.pin);//add by cai for enter nomal charging mode when usb is not configed.
-#endif				
-					goto exit;//add by cai
-				}	
-#endif
 			
 #if defined(__LDO_3V3_CTR__) 
-				hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_hw_pio_3_3v_control.pin);//add by cai for usb audio
+				hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_hw_pio_3_3v_control.pin);//add by cai for disable 3.5 line in
 #endif
 #if defined(BT_USB_AUDIO_DUAL_MODE)
                 usb_plugin = 1;
@@ -2266,7 +2253,7 @@ extern int rpc_service_setup(void);
         app_key_init();
         app_battery_start();
 #if defined(__BTIF_EARPHONE__) && defined(__BTIF_AUTOPOWEROFF__)
-        if(app_demo_mode_poweron_flag_get() || !app_battery_is_charging()) app_start_10_second_timer(APP_POWEROFF_TIMER_ID);//m by cai for usb audio
+        app_start_10_second_timer(APP_POWEROFF_TIMER_ID);//m by cai for usb audio
 #endif
 
 #if defined(__IAG_BLE_INCLUDE__) && defined(BTIF_BLE_APP_DATAPATH_SERVER)
@@ -2486,7 +2473,7 @@ extern int rpc_service_setup(void);
             app_key_init();
             app_battery_start();
 #if defined(__BTIF_EARPHONE__) && defined(__BTIF_AUTOPOWEROFF__)
-            if(pwron_case != APP_POWERON_CASE_USB_AUDIO) app_start_10_second_timer(APP_POWEROFF_TIMER_ID);//m by cai for usb audio
+            app_start_10_second_timer(APP_POWEROFF_TIMER_ID);
 #endif
 #ifdef __THIRDPARTY
             app_thirdparty_specific_lib_event_handle(THIRDPARTY_FUNC_NO1,THIRDPARTY_INIT);
@@ -2532,18 +2519,9 @@ exit:
     app_anc_set_init_done();
 #endif
 #ifdef BT_USB_AUDIO_DUAL_MODE
-#if 0 //m by cai
     if(usb_plugin)
-#else
-	if((!app_demo_mode_poweron_flag_get() && app_nvrecord_demo_mode_get()) || hal_gpio_pin_get_val((enum HAL_GPIO_PIN_T)cfg_hw_pio_3p5_jack_detecter.pin))  ;
-    else if(app_battery_is_charging() && !app_demo_mode_poweron_flag_get())//m by cai
-#endif
 	{
-    	if(usb_plugin) usb_plugin = 1;
         btusb_switch(BTUSB_MODE_USB);
-#ifdef ANC_APP
-		//poweron_set_anc();//add by cai for Pairing tone distortion
-#endif
     }
     else
     {
