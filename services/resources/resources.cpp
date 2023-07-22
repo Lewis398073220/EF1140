@@ -374,7 +374,6 @@ const char *aud_id_str[] =
 	"[AUD_ID_BT_ANC_OFF]",
 	"[AUD_ID_BT_MONITOR_ON]",
 	"[AUD_ID_BT_LOST_OF_RANGE]",
-	"[AUD_ID_BT_BAT_VERYLOW]",
 	"[AUD_ID_BT_GAME_ON]",
 	"[AUD_ID_BT_GAME_OFF]",
 
