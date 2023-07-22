@@ -1255,6 +1255,7 @@ static void anc_sample_rate_change(enum AUD_STREAM_T stream, enum AUD_SAMPRATE_T
     enum AUD_SAMPRATE_T play_rate, cap_rate;
 
     if (anc_sample_rate[stream] != rate) {
+#if 0
 #ifdef CHIP_BEST1000
         if (stream == AUD_STREAM_PLAYBACK) {
             play_rate = rate;
@@ -1294,6 +1295,49 @@ static void anc_sample_rate_change(enum AUD_STREAM_T stream, enum AUD_SAMPRATE_T
         anc_sample_rate[AUD_STREAM_PLAYBACK] = play_rate;
         anc_sample_rate[AUD_STREAM_CAPTURE] = cap_rate;
     }
+#else   //m by cai for pop noise when play first after connected
+#ifdef CHIP_BEST1000
+		if (stream == AUD_STREAM_PLAYBACK) {
+			play_rate = rate;
+			cap_rate = rate * (anc_sample_rate[AUD_STREAM_CAPTURE] / anc_sample_rate[AUD_STREAM_PLAYBACK]);
+		} else {
+			play_rate = rate / (anc_sample_rate[AUD_STREAM_CAPTURE] / anc_sample_rate[AUD_STREAM_PLAYBACK]);
+			cap_rate = rate;
+		}
+#else
+		play_rate = rate;
+		cap_rate = rate;
+#endif //CHIP_BEST1000
+
+		TRACE(5,"%s: Update anc sample rate from %u/%u to %u/%u", __func__,
+			anc_sample_rate[AUD_STREAM_PLAYBACK], anc_sample_rate[AUD_STREAM_CAPTURE], play_rate, cap_rate);
+
+		if (new_play) {
+			*new_play= play_rate;
+		}
+		if (new_cap) {
+			*new_cap = cap_rate;
+		}
+
+		anc_sample_rate[AUD_STREAM_PLAYBACK] = play_rate;
+		anc_sample_rate[AUD_STREAM_CAPTURE] = cap_rate;
+
+#ifdef ANC_MODE_SWITCH_WITHOUT_FADE
+			
+#ifdef ANC_FF_ENABLED
+		anc_select_coef(anc_sample_rate[AUD_STREAM_PLAYBACK],anc_coef_idx,ANC_FEEDFORWARD,ANC_GAIN_NO_DELAY);
+#endif
+#ifdef ANC_FB_ENABLED
+		anc_select_coef(anc_sample_rate[AUD_STREAM_PLAYBACK],anc_coef_idx,ANC_FEEDBACK,ANC_GAIN_NO_DELAY);
+#endif
+#ifdef AUDIO_ANC_FB_MC_HW
+		anc_select_coef(anc_sample_rate[AUD_STREAM_PLAYBACK],anc_coef_idx,ANC_MUSICCANCLE,ANC_GAIN_NO_DELAY);
+#endif
+#else
+		osSignalSet(anc_fade_thread_tid,CHANGE_FROM_ANC_TO_TT_DIRECTLY);
+#endif
+	}
+#endif
 }
 
 void app_anc_open_anc(void)
