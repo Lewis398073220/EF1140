@@ -102,6 +102,7 @@ const uint8_t EN_BT_HUNG_UP[] = {
 const uint8_t EN_BT_CONNECTED [] = {
 //#include "res/en/SOUND_CONNECTED.txt"
 #include "res/en/EF1140_Connected_16000.txt"
+//#include "res/en/EF1140_Single_Beep_Tone_16000.txt"
 };
 
 const uint8_t EN_BT_DIS_CONNECT [] = {
