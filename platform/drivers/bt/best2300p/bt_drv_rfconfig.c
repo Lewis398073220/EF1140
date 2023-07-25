@@ -754,14 +754,25 @@ static int check_btpower_efuse_invalid(void)
     return 1;
 }
 
+/** add by cai **/
+//#define rf_test   //for laboratory certification test
+/** end add **/
+
 void bt_drv_tx_pwr_init(void)
 {
     //ble txpower need modify ble tx idx @ bt_drv_config.c
     //modify bit4~7 to change ble tx gain
+#ifdef rf_test
+	btdrv_write_rf_reg(0x189, 0x007d); // min tx gain  2019.02.26
+    btdrv_write_rf_reg(0x18a, 0x0079); // mid tx gain  2019.02.26
+    if (0 == check_btpower_efuse_invalid())
+        btdrv_write_rf_reg(0x18b, 0x0075); // max tx gain 2019.02.26
+#else
     btdrv_write_rf_reg(0x189, 0x0071); // min tx gain  2019.02.26
     btdrv_write_rf_reg(0x18a, 0x0071); // mid tx gain  2019.02.26
     if (0 == check_btpower_efuse_invalid())
         btdrv_write_rf_reg(0x18b, 0x0071); // max tx gain 2019.02.26
+#endif
 }
 
 static uint16_t reg_18b_read_value=0;//add by pang for reconnect noise
@@ -769,6 +780,18 @@ void bt_drv_tx_pwr_init_for_testmode(void)
 {
     //ble txpower need modify ble tx idx @ bt_drv_config.c
     //modify bit4~7 to change ble tx gain
+#ifdef rf_test
+	btdrv_write_rf_reg(0x189, 0x007d); // min tx gain  2019.02.26
+    btdrv_write_rf_reg(0x18a, 0x0079); // mid tx gain  2019.02.26
+    //if (0 == check_btpower_efuse_invalid())
+        //btdrv_write_rf_reg(0x18b, 0x0071); // max tx gain 2019.02.26
+
+	//m by pang
+	if(reg_18b_read_value!=0)
+		btdrv_write_rf_reg(0x18b, 0x0075);
+	else
+    	btdrv_write_rf_reg(0x18b, 0x0075);
+#else
     btdrv_write_rf_reg(0x189, 0x007a); // min tx gain  2019.02.26
     btdrv_write_rf_reg(0x18a, 0x0076); // mid tx gain  2019.02.26
     //if (0 == check_btpower_efuse_invalid())
@@ -779,6 +802,7 @@ void bt_drv_tx_pwr_init_for_testmode(void)
 		btdrv_write_rf_reg(0x18b, reg_18b_read_value);
 	else
     	btdrv_write_rf_reg(0x18b, 0x0071);
+#endif
 }
 
 void btdrv_txpower_calib(void)

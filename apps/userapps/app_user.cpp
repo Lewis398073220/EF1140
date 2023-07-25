@@ -372,6 +372,7 @@ void apps_jack_event_process(void)
 		app_disconnect_all_bt_connections();
 		//osDelay(500);
 		app_bt_reconnect_idle_mode();
+		//app_bt_connectable_mode_stop_reconnecting();
 #ifdef  __IAG_BLE_INCLUDE__
 		app_ble_force_switch_adv(BLE_SWITCH_USER_BT_CONNECT, false);
 #endif
