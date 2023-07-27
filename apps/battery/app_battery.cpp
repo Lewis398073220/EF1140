@@ -327,7 +327,7 @@ int app_battery_handle_process_normal(uint32_t status,  union APP_BATTERY_MSG_PR
 #if 1 //m by cai
 			//低电提示音每10分钟播报一次
 			TRACE(2,"***batterylow: %d", lowbat_warning_time);
-			if((lowbat_warning_time == 0) || (lowbat_warning_time == 38)){   //76    10分钟
+			if((lowbat_warning_time == 0) || (lowbat_warning_time == 30)){   //76    10分钟
 #ifdef MEDIA_PLAYER_SUPPORT
 				app_voice_report(APP_STATUS_INDICATION_CHARGENEED, 0);
 #endif
