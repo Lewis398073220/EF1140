@@ -222,11 +222,11 @@ const uint8_t EN_BT_ANC_OFF[] = {
 };
 
 const uint8_t EN_BT_GAMING_ON[] = {
-#include "res/en/EF1140_Game_Mode_On_16000.txt"
+#include "res/en/EF1140_Low_Latency_On_16000.txt"
 };
 
 const uint8_t EN_BT_GAMING_OFF[] = {
-#include "res/en/EF1140_Game_Mode_Off_16000.txt"
+#include "res/en/EF1140_Low_Latency_Off_16000.txt"
 };
 
 const uint8_t EN_BT_LINK_LOST_OF_RANGE[] = {
