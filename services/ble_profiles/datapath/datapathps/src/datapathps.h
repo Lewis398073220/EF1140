@@ -36,7 +36,7 @@
 #include "attm.h"
 #include "prf_utils.h"
 
-#define custom_datapath //add by pang
+//#define custom_datapath //add by pang
 
 #define BLE_MAXIMUM_CHARACTERISTIC_DESCRIPTION	32
 
