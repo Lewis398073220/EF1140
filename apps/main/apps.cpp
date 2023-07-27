@@ -338,7 +338,7 @@ void app_10_second_timer_check(void)
 	
     for(i = 0; i < ARRAY_SIZE(app_10_second_array); i++) {
         if(i == APP_POWEROFF_TIMER_ID){
-			if ((timer->timer_en) && (get_sleep_time()!=SLEEP_TIME_PERM)) {
+			if ((timer->timer_en) && (get_sleep_time()!=SLEEP_TIME_OFF)) {
             	timer->timer_count++;
             	if (timer->timer_count >= get_sleep_time()) {
                 	timer->timer_en = 0;

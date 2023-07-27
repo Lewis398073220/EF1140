@@ -1443,7 +1443,7 @@ uint8_t get_sleep_time(void)
 void app_nvrecord_sleep_time_set(uint8_t sltime)
 {
 	if(sltime == 0x00)
-		sleep_time = SLEEP_TIME_PERM;
+		sleep_time = SLEEP_TIME_OFF;
 	else if(sltime == 0x03)
 		sleep_time = SLEEP_TIME_10MIN;
 	else if(sltime == 0x02)
@@ -1463,7 +1463,7 @@ void app_nvrecord_sleep_time_set(uint8_t sltime)
 
 uint8_t app_get_sleep_time(void)
 {
-	if(sleep_time == SLEEP_TIME_PERM) 
+	if(sleep_time == SLEEP_TIME_OFF) 
 		return (0x00);
 	else if(sleep_time == SLEEP_TIME_10MIN)
 		return (0x03); 
@@ -1728,7 +1728,7 @@ uint8_t app_nvrecord_demo_mode_get(void)
 /*
 uint8_t app_get_sleep_time(void)
 {
-	if(sleep_time ==SLEEP_TIME_PERM) 
+	if(sleep_time ==SLEEP_TIME_OFF) 
 		return (0x00);
 	else if(sleep_time==SLEEP_TIME_10MIN)
 		return (0x03); 
@@ -1749,7 +1749,7 @@ uint8_t get_sleep_time(void)
 void app_nvrecord_sleep_time_set(uint8_t sltime)
 {
    if(sltime==0x00)
-   	sleep_time =SLEEP_TIME_PERM;
+   	sleep_time =SLEEP_TIME_OFF;
    else if(sltime==0x03)
    	sleep_time =SLEEP_TIME_10MIN;
    else if(sltime==0x02)
