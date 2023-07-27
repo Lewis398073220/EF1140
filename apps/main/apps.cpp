@@ -1471,6 +1471,30 @@ const APP_KEY_HANDLE  app_key_handle_cfg[] = {
 #endif
 #endif
 
+/** add by cai **/
+#if defined(AUDIO_LINEIN)
+const APP_KEY_HANDLE  app_audio_linein_key_handle_cfg[] = {
+	{{APP_KEY_CODE_PWR,APP_KEY_EVENT_LONGLONGLONGPRESS},"bt function key",app_bt_key_shutdown, NULL},
+	{{APP_KEY_CODE_FN1,APP_KEY_EVENT_UP},"bt volume up key",app_bt_key, NULL},
+	{{APP_KEY_CODE_FN1,APP_KEY_EVENT_LONGPRESS},"bt volume down key",app_bt_key, NULL},
+	{{APP_KEY_CODE_FN1,APP_KEY_EVENT_REPEAT},"bt volume down key",app_bt_key, NULL},
+	{{HAL_KEY_CODE_FN5,APP_KEY_EVENT_CLICK},"bt anc key",bt_key_handle_ANC_key, NULL},
+};
+
+void app_audio_linein_key_init(void)
+{
+	uint8_t i = 0;
+	TRACE(1,"%s",__func__);
+	
+	app_key_handle_clear();
+	for (i=0; i<(sizeof(app_audio_linein_key_handle_cfg)/sizeof(APP_KEY_HANDLE)); i++){
+		app_key_handle_registration(&app_audio_linein_key_handle_cfg[i]);
+	}
+
+}
+#endif
+/** end add **/
+
 void app_key_init(void)
 {
 #if defined(IBRT)

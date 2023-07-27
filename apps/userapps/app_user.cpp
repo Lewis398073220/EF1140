@@ -389,7 +389,7 @@ void apps_jack_event_process(void)
 #endif
 	    app_bt_accessmode_set(BTIF_BAM_NOT_ACCESSIBLE);	
 		app_status_indication_set(APP_STATUS_INDICATION_AUDIO_LINEIN);
-		
+		app_audio_linein_key_init();//add by cai
 #if defined(__AC107_ADC__)
 		ac107_init=0;
 		ac107_hw_open();
@@ -410,6 +410,7 @@ void apps_jack_event_process(void)
 		power_on_open_reconnect_flag=0;//add by cai
 		app_bt_profile_connect_manager_opening_reconnect();
 		app_start_10_second_timer(APP_POWEROFF_TIMER_ID);//add by cai
+		app_key_init();//add by cai
 #endif
 		
 #if defined(__AC107_ADC__)

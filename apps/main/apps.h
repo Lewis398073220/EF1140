@@ -74,8 +74,9 @@ extern uint8_t app_poweroff_flag;
 void app_factory_reset(void);
 void app_ring_merge_set(APP_STATUS_INDICATION_T status);
 APP_STATUS_INDICATION_T app_ring_merge_get(void);
-void app_usb_key_init(void);//add by cai
-void app_key_init(void);//add by cai
+void app_usb_key_init(void);
+void app_key_init(void);
+void app_audio_linein_key_init(void);
 /** end add **/
 
 ////////////////////
