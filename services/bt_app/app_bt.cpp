@@ -2725,6 +2725,12 @@ static void app_bt_update_connectable_mode_after_connection_management(void)
 			isEnterConnetableOnlyState = true;
 			app_bt_accessmode_set(BTIF_BAM_NOT_ACCESSIBLE); 
 			app_status_indication_set(APP_STATUS_INDICATION_AUDIO_LINEIN);
+			if((btif_me_get_activeCons() > 0) || (0 < app_bt_is_connected())) //add by cai
+			{
+				app_audio_sendrequest(APP_BT_STREAM_INVALID, (uint8_t)APP_BT_SETTING_CLOSEALL, 0);
+				//osDelay(500);
+				app_disconnect_all_bt_connections();
+			}	
 		}
 #endif
 
@@ -2806,6 +2812,8 @@ static void app_bt_connectable_mode_stop_reconnecting_handler(void)
 
 void app_bt_connectable_mode_stop_reconnecting(void)
 {
+	TRACE(2,"***%s 0x%08x",__func__, (uint32_t)app_bt_connectable_mode_stop_reconnecting_handler);//add by cai
+
     app_bt_start_custom_function_in_bt_thread(0, 0,
         (uint32_t)app_bt_connectable_mode_stop_reconnecting_handler);
 }

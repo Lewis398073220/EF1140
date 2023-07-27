@@ -350,7 +350,10 @@ void apps_jack_event_process(void)
 	}
 #else
 	static int8_t in_val = 0, out_val = 0 ;
-	
+#if defined(__AC107_ADC__)
+	static int8_t ac107_init = 0;
+#endif
+
 	if(apps_3p5_jack_get_val()){
 		in_val++;
 		out_val=0;		
@@ -361,18 +364,26 @@ void apps_jack_event_process(void)
 	}
 #endif
 	
-	if((in_val==CHECK_3_5JACK_MAX_NUM)&&(jack_3p5_plug_in_flag==0)){
+	if((in_val>=CHECK_3_5JACK_MAX_NUM)&&(jack_3p5_plug_in_flag==0)){
 		TRACE(0,"***detected 3_5jack in!");
 	    reconncect_null_by_user=true;
+		jack_3p5_plug_in_flag=1;
+		jack_count=0;
 #if defined(AUDIO_LINEIN)
 		app_stop_10_second_timer(APP_POWEROFF_TIMER_ID);//add by cai
 		app_stop_10_second_timer(APP_AUTO_POWEROFF_TIMER_ID);
 		//app_audio_sendrequest(APP_BT_STREAM_INVALID, (uint8_t)APP_BT_SETTING_CLOSEALL, 0);
 		//osDelay(500);
-		app_disconnect_all_bt_connections();
+		//app_disconnect_all_bt_connections();
 		//osDelay(500);
-		app_bt_reconnect_idle_mode();
-		//app_bt_connectable_mode_stop_reconnecting();
+		//app_bt_reconnect_idle_mode();
+		app_bt_connectable_mode_stop_reconnecting();
+		if((btif_me_get_activeCons() > 0) || (0 < app_bt_is_connected())) 
+		{
+			app_audio_sendrequest(APP_BT_STREAM_INVALID, (uint8_t)APP_BT_SETTING_CLOSEALL, 0);
+			//osDelay(500);
+			app_disconnect_all_bt_connections();//add by cai
+		}	
 #ifdef  __IAG_BLE_INCLUDE__
 		app_ble_force_switch_adv(BLE_SWITCH_USER_BT_CONNECT, false);
 #endif
@@ -380,6 +391,7 @@ void apps_jack_event_process(void)
 		app_status_indication_set(APP_STATUS_INDICATION_AUDIO_LINEIN);
 		
 #if defined(__AC107_ADC__)
+		ac107_init=0;
 		ac107_hw_open();
 		ac107_i2c_init();
 #endif		
@@ -387,11 +399,7 @@ void apps_jack_event_process(void)
 		hal_codec_dac_mute(1);
 		app_shutdown();//shutdown
 #endif
-		//jack_3p5_plug_in_flag=1;
-		//jack_count=0;
-	
-		//app_poweroff_flag = 1;
-	} else if((out_val>CHECK_3_5JACK_MAX_NUM)&&(jack_3p5_plug_in_flag==1)){
+	} else if((out_val>=CHECK_3_5JACK_MAX_NUM)&&(jack_3p5_plug_in_flag==1)){
 		TRACE(0,"***detected 3_5jack out!");
 		out_val=CHECK_3_5JACK_MAX_NUM;
 		reconncect_null_by_user=false;
@@ -405,23 +413,25 @@ void apps_jack_event_process(void)
 #endif
 		
 #if defined(__AC107_ADC__)
+		ac107_init=0;
 		ac107_hw_close();
 #endif
 	}
 	
-	if(in_val>(CHECK_3_5JACK_MAX_NUM+1) && (jack_3p5_plug_in_flag==0)){		
+	if(ac107_init==0 && (jack_3p5_plug_in_flag==1) && in_val>=(CHECK_3_5JACK_MAX_NUM+2)){		
 #if defined(__AC107_ADC__)
+		ac107_init=1;
 		ac107_hw_init();
 		app_bt_stream_lineinvolume_set_user(17);//add by cai
 #endif
-		jack_3p5_plug_in_flag=1;
-		jack_count=0;
+		//jack_3p5_plug_in_flag=1;
+		//jack_count=0;
 	}
 	
 	if(++jack_count>2){
 		jack_count=0;
 #if defined(AUDIO_LINEIN)		
-		if(!bt_media_is_media_active()&&jack_3p5_plug_in_flag){
+		if(!bt_media_is_media_active() && jack_3p5_plug_in_flag && ac107_init==1){
 			app_play_linein_onoff(1);
 		}
 #endif
