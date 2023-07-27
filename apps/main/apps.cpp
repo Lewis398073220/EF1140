@@ -334,6 +334,8 @@ void app_10_second_timer_check(void)
     APP_10_SECOND_TIMER_STRUCT *timer = app_10_second_array;
 	unsigned int i;
 	
+	//TRACE(0,"***timer:%dms",TICKS_TO_MS(hal_sys_timer_get()));
+	
     for(i = 0; i < ARRAY_SIZE(app_10_second_array); i++) {
         if(i == APP_POWEROFF_TIMER_ID){
 			if ((timer->timer_en) && (get_sleep_time()!=SLEEP_TIME_PERM)) {
