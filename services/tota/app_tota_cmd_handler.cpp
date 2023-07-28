@@ -25,7 +25,9 @@
 #include "app_spp_tota.h"
 #include "app_tota_ble.h"
 #include "philips_ble_api.h"//add by pang
-
+#ifdef __CREATIVE_APP__
+#include "creative_ble_api.h"//add by cai
+#endif
 
 #define APP_TOTA_CMD_HANDLER_WAITING_RSP_TIMEOUT_SUPERVISOR_COUNT	8
 
@@ -316,12 +318,15 @@ APP_TOTA_CMD_RET_STATUS_E app_tota_cmd_received(uint8_t* ptrData, uint32_t dataL
 	TOTA_LOG_DUMP("0x%02x ", ptrData, dataLength);
 	APP_TOTA_CMD_PAYLOAD_T* pPayload = (APP_TOTA_CMD_PAYLOAD_T *)ptrData;
 
-    // add by pang for TPV API spp
-	if(pPayload->cmdCode==OP_TOTA_TPV_API_CMD){
-		Philips_Api_protocol_port(2);
-		Philips_Headphone_Api_Entry(ptrData, dataLength);		
+    /** add by cai for Creative API spp **/
+    #ifdef __CREATIVE_APP__
+	if(ptrData[0]==OP_TOTA_CREATIVE_API_CMD){
+		APP_protocol_port(1);
+		APP_Api_Entry(ptrData, dataLength);		
 		return TOTA_NO_ERROR;
 	}
+	#endif
+	/** end add **/
 	
 	// check command code
 	if (pPayload->cmdCode >= OP_TOTA_COMMAND_COUNT || pPayload->cmdCode < OP_TOTA_RESPONSE_TO_CMD)
