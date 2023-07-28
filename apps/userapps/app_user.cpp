@@ -377,7 +377,7 @@ void apps_jack_event_process(void)
 		//app_disconnect_all_bt_connections();
 		//osDelay(500);
 		//app_bt_reconnect_idle_mode();
-		app_bt_connectable_mode_stop_reconnecting();
+		if(app_bt_is_in_reconnecting()) app_bt_connectable_mode_stop_reconnecting();
 		if((btif_me_get_activeCons() > 0) || (0 < app_bt_is_connected())) 
 		{
 			app_audio_sendrequest(APP_BT_STREAM_INVALID, (uint8_t)APP_BT_SETTING_CLOSEALL, 0);
@@ -432,7 +432,7 @@ void apps_jack_event_process(void)
 	if(++jack_count>2){
 		jack_count=0;
 #if defined(AUDIO_LINEIN)		
-		if(!bt_media_is_media_active() && jack_3p5_plug_in_flag && ac107_init==1){
+		if(!bt_media_is_media_active() && jack_3p5_plug_in_flag && ac107_init==1 && ((btif_me_get_activeCons() == 0) || (0 == app_bt_is_connected()))){
 			app_play_linein_onoff(1);
 		}
 #endif

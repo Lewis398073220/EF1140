@@ -124,6 +124,10 @@ uint8_t remote_dev_name[10]={0};
 uint8_t dev_name_user[BT_DEVICE_NUM][100] = {0};
 uint8_t cur_device_id=BT_DEVICE_ID_1;
 
+#if defined(AUDIO_LINEIN)
+extern int app_play_linein_onoff(bool onoff);
+#endif
+
 void app_cur_connect_devid_set(uint8_t id, uint8_t connect)
 {
 	if(connect == true) {
@@ -3383,7 +3387,10 @@ void app_bt_profile_connect_manager_hf(enum BT_DEVICE_ID_T id, hf_chan_handle_t 
 		
 		TRACE(1,"BT connected!!!: %d",id);//m by cai
 		app_cur_connect_devid_set(id, true);//add by cai
-		
+#if defined(AUDIO_LINEIN)		
+		app_play_linein_onoff(0);//add by cai
+#endif
+
 		if((bt_profile_manager[id].reconnect_mode == bt_profile_reconnect_null))//回连的时候不保存配对记录 
 		{																		//按键切换回连成功保存配对记录 ZCL @ 2020/07/24		
 			TRACE(0,"not reconnect record!!!");
@@ -3850,7 +3857,10 @@ void app_bt_profile_connect_manager_a2dp(enum BT_DEVICE_ID_T id, a2dp_stream_t *
         nv_record_btdevicerecord_set_last_active(btdevice_plf_p);
         TRACE(1,"BT connected!!!: %d",id);//m by cai
 		app_cur_connect_devid_set(id, true);//add by cai
-		
+#if defined(AUDIO_LINEIN)		
+		app_play_linein_onoff(0);//add by cai
+#endif
+
 		if((bt_profile_manager[id].reconnect_mode == bt_profile_reconnect_null))//回连的时候不保存配对记录 
 		{																	     //按键切换回连成功保存配对记录 ZCL @ 2020/07/24		
 			TRACE(0,"not reconnect record!!!");
