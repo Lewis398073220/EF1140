@@ -43,8 +43,7 @@
 #include "hal_usb.h"//add by cai
 
 bool battery_pd_poweroff=0;
-
-
+bool battery_low_battery=0;
 /** end add **/
 #if (defined(BTUSB_AUDIO_MODE) || defined(BTUSB_AUDIO_MODE))
 extern "C" bool app_usbaudio_mode_on(void);
@@ -323,6 +322,7 @@ int app_battery_handle_process_normal(uint32_t status,  union APP_BATTERY_MSG_PR
     {
         case APP_BATTERY_STATUS_UNDERVOLT:
             TRACE(1,"UNDERVOLT:%d", prams.volt);
+			battery_low_battery=true;
 			app_status_indication_set(APP_STATUS_INDICATION_CHARGENEED);
 #if 1 //m by cai
 			//低电提示音每10分钟播报一次
@@ -1054,6 +1054,11 @@ int8_t app_battery_is_charging(void)
 bool app_battery_is_pdvolt(void)
 {
     return (battery_pd_poweroff);
+}
+
+bool app_battery_is_batterylow(void)
+{
+    return (battery_low_battery);
 }
 
 #if defined(__NTC_DETECT__)

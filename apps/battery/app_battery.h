@@ -115,6 +115,7 @@ int ntc_capture_start(void);
 
 /** add by cai **/
 bool app_battery_is_pdvolt(void);
+bool app_battery_is_batterylow(void);
 bool charge_protection_status_get(void);
 /** end add **/
 

@@ -193,6 +193,69 @@ void Get_Device_Information(uint8_t *data, uint32_t size)
 	}
 }
 
+void Get_Battery_Level(uint8_t *data, uint32_t size)
+{
+	uint8_t OPTYPE = (uint8_t)data[4];
+
+	switch(OPTYPE)
+	{
+		case OPTYPE_BATTERY_LEVEL_RANGE_QUERY:
+			TRACE(1,"%s: OPTYPE_BATTERY_LEVEL_RANGE_QUERY\r\n",__func__);
+			packet.cmdID = CMDID_BATTERY_LEVEL;
+			packet.payloadLen = 0x04;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_BATTERY_LEVEL_RANGE_QUERY;
+			packet.payload[1] = 100;//Maximum Battery Level
+			packet.payload[2] = 0;//Minimum Battery Level
+			packet.payload[3] = 10;//Step value
+		
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+			
+		case OPTYPE_BATTERY_LEVEL_QUERY:
+			TRACE(1,"%s: OPTYPE_BATTERY_LEVEL_QUERY\r\n",__func__);
+			packet.cmdID = CMDID_BATTERY_LEVEL;
+			packet.payloadLen = 0x07;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_BATTERY_LEVEL_QUERY;
+			packet.payload[1] = 1;//Total number of devices queried
+			*((uint32_t *)(packet.payload + 2)) = GENERIC_DEVICE_DEFAULT;
+			packet.payload[6] = 10 * app_battery_current_level();
+
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+			
+		default:
+			TRACE(2,"%s: undefined OPTYPE 0x%x!\r\n",__func__, OPTYPE);
+			break;
+	}
+}
+
+void Get_Battery_Status(uint8_t *data, uint32_t size)
+{
+	uint8_t OPTYPE = (uint8_t)data[4];
+	
+	switch(OPTYPE)
+	{
+		case OPTYPE_BATTERY_STATUS_QUERY:
+			TRACE(1,"%s: OPTYPE_BATTERY_STATUS_QUERY\r\n",__func__);
+			packet.cmdID = CMDID_BATTERY_STATUS;
+			packet.payloadLen = 0x0A;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_BATTERY_STATUS_QUERY;
+			packet.payload[1] = 1;//Total number of devices queried
+			*((uint32_t *)(packet.payload + 2)) = GENERIC_DEVICE_DEFAULT;
+			*((uint32_t *)(packet.payload + 6)) = app_battery_is_charging()?CHARGING:(app_battery_is_batterylow()?LOW_BATTERY:NORMAL);
+
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+			
+		default:
+			TRACE(2,"%s: undefined OPTYPE 0x%x!\r\n",__func__, OPTYPE);
+			break;
+	}
+}
+
 bool APP_Functions_Call(uint8_t *data, uint32_t size)
 {
 	uint8_t CMDID = (uint8_t)data[1];
@@ -202,6 +265,16 @@ bool APP_Functions_Call(uint8_t *data, uint32_t size)
 		case CMDID_DEVICE_INFORMATION:
 			TRACE(1,"%s: CMDID_DEVICE_INFORMATION\r\n",__func__);
 			Get_Device_Information(data, size);
+			return true;
+
+		case CMDID_BATTERY_LEVEL:
+			TRACE(1,"%s: CMDID_BATTERY_LEVEL\r\n",__func__);
+			Get_Battery_Level(data, size);
+			return true;
+
+		case CMDID_BATTERY_STATUS:
+			TRACE(1,"%s: CMDID_BATTERY_STATUS\r\n",__func__);
+			Get_Battery_Status(data, size);
 			return true;
 			
 		default:
