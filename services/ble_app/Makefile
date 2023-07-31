@@ -135,7 +135,8 @@ subdir-ccflags-y += \
     -Ithirdparty/tile/tile_common/tile_player \
     -Ithirdparty/tile/tile_common/tile_service \
     -Ithirdparty/tile/tile_common/tile_storage \
-    -Iservices/voicepath/gsound/gsound_target
+    -Iservices/voicepath/gsound/gsound_target \
+	-Iservices/nv_section/factory_section
 
 ifeq ($(AUDIO_RESAMPLE),1)
 CFLAGS_voice_over_ble.o += -D__AUDIO_RESAMPLE__
