@@ -256,6 +256,16 @@ void Get_Battery_Status(uint8_t *data, uint32_t size)
 	}
 }
 
+void Get_Bluetooth_Support_Feature(uint8_t *data, uint32_t size)
+{
+	packet.cmdID = CMDID_BLUETOOTH_FEATURE_CONTROL;
+	packet.payloadLen = 0x04;
+	packetLen = packet.payloadLen + 4;
+	*((uint32_t *)packet.payload) = BATTERY_STATUS_QUERY | GRAPHIC_EQUALIZER | NOISE_CONTROL | LOW_LATENCY_MODE | OTA_FIRMWARE_UPGRADE;
+
+	APP_Send_Notify((uint8_t *)(&packet), packetLen);
+}
+
 bool APP_Functions_Call(uint8_t *data, uint32_t size)
 {
 	uint8_t CMDID = (uint8_t)data[1];
@@ -275,6 +285,11 @@ bool APP_Functions_Call(uint8_t *data, uint32_t size)
 		case CMDID_BATTERY_STATUS:
 			TRACE(1,"%s: CMDID_BATTERY_STATUS\r\n",__func__);
 			Get_Battery_Status(data, size);
+			return true;
+
+		case CMDID_BLUETOOTH_FEATURE_CONTROL:
+			TRACE(1,"%s: CMDID_BLUETOOTH_FEATURE_CONTROL\r\n",__func__);
+			Get_Bluetooth_Support_Feature(data, size);
 			return true;
 			
 		default:
