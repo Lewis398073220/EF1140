@@ -33,12 +33,12 @@ struct PACKET_STRUCTURE {
 #define VENDOR_ID				  0x041E
 enum FIRMWARE_VERSION_FORMAT {
 	MAJOR = HARDWARE_REVISION & 0x07,//低3位
-	MINOR = 2 & 0x3F,//低6位    3st release
+	MINOR = 3 & 0x3F,//低6位    4st release
 	YR = 7 & 0x0F,//低4位    2023年
 	MONTH = 8 & 0x0F,//低4位   8月
-	DAY = 1 & 0x1F,//低5位   1号
-	HR = 13 & 0x1F,//低5位   13点
-	QUARTER = 0 & 0x03,//低2位   1st Quarter
+	DAY = 2 & 0x1F,//低5位   2号
+	HR = 11 & 0x1F,//低5位   11点
+	QUARTER = 2 & 0x03,//低2位   1st Quarter
 	PATCH = 0 & 0x07,//低3位   patch 0
 };
 
