@@ -67,7 +67,7 @@ static bool charge_full_flag=0;//add by pang
 #endif
 
 #ifndef APP_BATTERY_CHARGE_TIMEOUT_MIN
-#define APP_BATTERY_CHARGE_TIMEOUT_MIN (210)
+#define APP_BATTERY_CHARGE_TIMEOUT_MIN (125)//m by cai   210
 #endif
 
 #ifndef APP_BATTERY_CHARGE_OFFSET_MV
@@ -604,7 +604,7 @@ int app_battery_handle_process_charging(uint32_t status,  union APP_BATTERY_MSG_
 			/** end add **/
         }
 		else {   //add by cai for current recharge
-			if(app_battery_measure.currvolt < 4060 && !charge_protection_status_get())
+			if(app_battery_measure.currvolt < 4000 && !charge_protection_status_get())
 			{
 				if (app_battery_ext_charger_enable_cfg.pin != HAL_IOMUX_PIN_NUM)
 				{
