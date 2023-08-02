@@ -851,7 +851,7 @@ void  bt_media_start(uint16_t stream_type,enum BT_DEVICE_ID_T device_id, uint16_
 
 #ifdef MIX_AUDIO_PROMPT_WITH_A2DP_MEDIA_ENABLED
                         bt_media_clear_media_type(BT_STREAM_MEDIA, device_id);
-                        if(0)// (isMergingPrompt)//m by pang
+                        if(isMergingPrompt)//m by pang for A2DP mix prompt
                         {
                             audio_prompt_start_playing(media_id,a2dp_sample_rate);
                             goto exit;

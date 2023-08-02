@@ -1204,7 +1204,7 @@ FRAM_TEXT_LOC void bt_sbc_player_playback_post_handler(uint8_t *buf, uint32_t le
 {
     POSSIBLY_UNUSED struct AF_STREAM_CONFIG_T *config = (struct AF_STREAM_CONFIG_T *)cfg;
 
-#if 0//def MIX_AUDIO_PROMPT_WITH_A2DP_MEDIA_ENABLED//by pang
+#ifdef MIX_AUDIO_PROMPT_WITH_A2DP_MEDIA_ENABLED//by pang for A2DP mix prompt
     if (audio_prompt_is_playing_ongoing())
     {
         audio_prompt_processing_handler(len, buf);
@@ -3825,7 +3825,7 @@ int bt_sbc_player(enum PLAYER_OPER_T on, enum APP_SYSFREQ_FREQ_T freq)
 #endif
 
 
-#if 0//def MIX_AUDIO_PROMPT_WITH_A2DP_MEDIA_ENABLED//by pang
+#ifdef MIX_AUDIO_PROMPT_WITH_A2DP_MEDIA_ENABLED//by pang for A2DP mix prompt
         uint8_t* promptTmpSourcePcmDataBuf;
         uint8_t* promptTmpTargetPcmDataBuf;
         uint8_t* promptPcmDataBuf;
