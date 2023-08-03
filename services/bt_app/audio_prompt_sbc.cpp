@@ -585,6 +585,7 @@ bool audio_prompt_check_on_stopping_stream(uint8_t pendingStopOp, uint8_t device
     uint32_t lock = int_lock_global();
     if (audio_prompt_env.isMixPromptOn)
     {
+#if 0
         if (bt_is_playback_triggered())
         {
             TRACE(1,"Prompt mixing ongoing, pending op:%d", pendingStopOp);
@@ -599,6 +600,11 @@ bool audio_prompt_check_on_stopping_stream(uint8_t pendingStopOp, uint8_t device
             audio_prompt_stop_playing();
             return true;
         }
+#else//m by cai for fix instruction access violation when incoming call in prompt playing
+		int_unlock_global(lock);
+		audio_prompt_stop_playing();
+		return true;
+#endif
     }
 
     int_unlock_global(lock);
