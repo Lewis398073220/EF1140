@@ -357,7 +357,7 @@ bool spp_test_cmd_received(uint8_t* ptrData, uint32_t dataLength)
 	TOTA_LOG_DBG(0,"TOTA Receive data:");
 	TOTA_LOG_DUMP("0x%02x ", ptrData, dataLength);
 	APP_TOTA_CMD_PAYLOAD_T* pPayload = (APP_TOTA_CMD_PAYLOAD_T *)ptrData;
-	if ((pPayload->cmdCode ==OP_TOTA_MIC_TEST_CMD)||(pPayload->cmdCode ==OP_TOTA_TPV_API_CMD))
+	if ((pPayload->cmdCode ==OP_TOTA_MIC_TEST_CMD)||(ptrData[0]==OP_TOTA_CREATIVE_API_CMD))
 		return true;
 	else 
 		return false;
