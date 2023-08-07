@@ -3382,6 +3382,7 @@ int bt_sbc_player(enum PLAYER_OPER_T on, enum APP_SYSFREQ_FREQ_T freq)
         if (isToClearActiveMedia)
         {
             // clear active media mark
+            audio_prompt_stop_playing();//add by cai for fix instruction access violation when incoming call in prompt playing
             bt_media_clear_media_type(BT_STREAM_SBC, BT_DEVICE_ID_1);
             bt_media_current_sbc_set(BT_DEVICE_NUM);
         }
