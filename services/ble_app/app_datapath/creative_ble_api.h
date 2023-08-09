@@ -36,8 +36,8 @@ enum FIRMWARE_VERSION_FORMAT {
 	MINOR = 3 & 0x3F,//低6位    4st release
 	YR = 7 & 0x0F,//低4位    2023年
 	MONTH = 8 & 0x0F,//低4位   8月
-	DAY = 2 & 0x1F,//低5位   2号
-	HR = 17 & 0x1F,//低5位   17点
+	DAY = 9 & 0x1F,//低5位   9号
+	HR = 14 & 0x1F,//低5位   14点
 	QUARTER = 2 & 0x03,//低2位   3st Quarter
 	PATCH = 0 & 0x07,//低3位   patch 0
 };
