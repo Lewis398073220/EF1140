@@ -116,6 +116,8 @@
 
 #include "app_user.h"//add by pang
 #include "apps.h"
+#include "bt_sco_chain.h"//for spp test
+
 static uint8_t game_mode_on=0;
 
 // NOTE: Modify parameters for your project.
@@ -5946,7 +5948,31 @@ int bt_sco_player(bool on, enum APP_SYSFREQ_FREQ_T freq)
 #else
         stream_cfg.device = AUD_STREAM_USE_INT_CODEC;
 #endif
-        stream_cfg.io_path = AUD_INPUT_PATH_MAINMIC;
+#if 0
+		stream_cfg.io_path = AUD_INPUT_PATH_MAINMIC;
+#else //by pang for spp test 		
+		switch(spp_test_mic_get())
+		{
+			case 1:
+				stream_cfg.io_path = AUD_INPUT_PATH_MAINMIC;
+				break;
+			case 2:
+				stream_cfg.io_path = AUD_INPUT_PATH_LFFMIC_SPP;
+				break;
+			case 3:
+				stream_cfg.io_path = AUD_INPUT_PATH_RFFMIC_SPP;
+				break;
+			case 4:
+				stream_cfg.io_path = AUD_INPUT_PATH_LFBMIC_SPP;
+				break;
+			case 5:
+				stream_cfg.io_path = AUD_INPUT_PATH_RFBMIC_SPP;
+				break;		
+			default:
+				stream_cfg.io_path = AUD_INPUT_PATH_MAINMIC;
+				break;
+		}
+#endif
         stream_cfg.handler = bt_sco_codec_capture_data;
         app_audio_mempool_get_buff(&bt_audio_buff, stream_cfg.data_size);
         stream_cfg.data_ptr = BT_AUDIO_CACHE_2_UNCACHE(bt_audio_buff);
