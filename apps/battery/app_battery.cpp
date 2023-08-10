@@ -1076,8 +1076,8 @@ static void app_ntc_timer_handler(void const *param)
 #if 1 //1.97v reference volt ntc电阻10k
 #define CHARGE_HIGH_TEMPERATURE         590     // 45C
 #define CHARGE_LOW_TEMPERATURE     		1320    // 0C 
-#define CHARGE_HIGH_TEMPERATURE_RECOVER	632//530		42C//43C
-#define CHARGE_LOW_TEMPERATURE_RECOVER  1260//1270    3C//2C
+#define CHARGE_HIGH_TEMPERATURE_RECOVER	646//530		42C//43C
+#define CHARGE_LOW_TEMPERATURE_RECOVER  1244//1270    3C//2C
 
 #define DISCHARGE_HIGH_TEMPERATURE 		380   	// 60C
 #define DISCHARGE_LOW_TEMPERATURE  		1470//1587//1525//1730 	-10C//-15C//-25C
@@ -1192,9 +1192,9 @@ void ntc_capture_irqhandler(uint16_t irq_val, HAL_GPADC_MV_T volt)
 		//charge recover
 		if(charge_protection_flag){
 			if((ntc_capture_measure.currvolt>CHARGE_HIGH_TEMPERATURE_RECOVER)&&(ntc_capture_measure.currvolt<CHARGE_LOW_TEMPERATURE_RECOVER))
-				charge_temperature_valid_num=0;
+				charge_temperature_valid_num++;
 			else
-			    charge_temperature_valid_num++;
+			    charge_temperature_valid_num=0;
 		}
 		else{
 			charge_temperature_valid_num=0;
