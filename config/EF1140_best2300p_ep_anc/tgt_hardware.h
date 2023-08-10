@@ -150,8 +150,8 @@ extern const int8_t cfg_aud_eq_sbc_band_settings[CFG_HW_AUD_EQ_NUM_BANDS];
 #define CFG_AUD_EQ_IIR_NUM_BANDS (4)
 
 //battery info
-#define APP_BATTERY_MIN_MV  (3462)
-#define APP_BATTERY_PD_MV   (3200)
+#define APP_BATTERY_MIN_MV  (3330)//(3462)
+#define APP_BATTERY_PD_MV   (3200)//(3400)
 
 #define APP_BATTERY_MAX_MV (4200)
 
