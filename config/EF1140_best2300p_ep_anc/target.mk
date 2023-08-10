@@ -439,7 +439,6 @@ KBUILD_CPPFLAGS += \
     -D__APP_KEY_FN_STYLE_A__ \
     -D__USER_DEFINE_CTR__ \
     -D__LDO_3V3_CTR__ \
-    -D__AUDIO_FADEIN__ \
     -D__NTC_DETECT__ \
     -D__USE_3_5JACK_CTR__ \
     -D__AC107_ADC__ \
@@ -449,6 +448,7 @@ KBUILD_CPPFLAGS += \
     -D__CREATIVE_APP__ \
     -D__EARPHONE_STAY_BOTH_SCAN__
 #    -D__MULTIPOINT_A2DP_PREEMPT__
+#	 -D__AUDIO_FADEIN__
 #    -D__DEFINE_DEMO_MODE__
 #    -D__CHARGE_CURRRENT__
 # 	 -D__PWM_LED_CTL__
