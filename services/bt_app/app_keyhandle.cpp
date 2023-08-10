@@ -77,6 +77,7 @@ extern struct BT_DEVICE_T  app_bt_device;
 #endif
 
 #include "app_media_player.h"
+#include "hal_codec.h"
 
 #if 0
 enum
@@ -1221,11 +1222,19 @@ static void bt_key_handle_game_key(void)
 	HFCALL_MACHINE_ENUM hfcall_machine = app_get_hfcall_machine();
 	if(hfcall_machine==HFCALL_MACHINE_CURRENT_IDLE_ANOTHER_IDLE){
 		if(get_app_gaming_mode()){
+			hal_codec_dac_mute(1);
+			osDelay(60);
 			app_gaming_mode(0);
+			osDelay(60);
+			hal_codec_dac_mute(0);
 			app_voice_report(APP_STATUS_INDICATION_GAMING_OFF, 0);
 		}
 		else{
+			hal_codec_dac_mute(1);
+			osDelay(60);
 			app_gaming_mode(1);
+			osDelay(60);
+			hal_codec_dac_mute(0);
 			app_voice_report(APP_STATUS_INDICATION_GAMING_ON, 0);
 		}
 		#if defined(__HAYLOU_APP__)
