@@ -1076,7 +1076,7 @@ static void app_ntc_timer_handler(void const *param)
 #if 1 //1.97v reference volt ntc电阻10k
 #define CHARGE_HIGH_TEMPERATURE         590     // 45C
 #define CHARGE_LOW_TEMPERATURE     		1320    // 0C 
-#define CHARGE_HIGH_TEMPERATURE_RECOVER	632//530		42C//43C
+#define CHARGE_HIGH_TEMPERATURE_RECOVER	604//530		42C//43C
 #define CHARGE_LOW_TEMPERATURE_RECOVER  1276//1270    3C//2C
 
 #define DISCHARGE_HIGH_TEMPERATURE 		380   	// 60C
@@ -1200,8 +1200,8 @@ void ntc_capture_irqhandler(uint16_t irq_val, HAL_GPADC_MV_T volt)
 			charge_temperature_valid_num=0;
 		}
 		
-		if(charge_temperature_valid_num>5){
-			charge_temperature_valid_num=5+1;
+		if(charge_temperature_valid_num>30){
+			charge_temperature_valid_num=30+1;
 			if (app_battery_ext_charger_enable_cfg.pin != HAL_IOMUX_PIN_NUM)
 			{
 			    //if(0==charge_full_flag)
