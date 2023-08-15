@@ -3384,7 +3384,6 @@ int bt_sbc_player(enum PLAYER_OPER_T on, enum APP_SYSFREQ_FREQ_T freq)
         if (isToClearActiveMedia)
         {
             // clear active media mark
-            audio_prompt_stop_playing();//add by cai for fix instruction access violation when incoming call in prompt playing
             bt_media_clear_media_type(BT_STREAM_SBC, BT_DEVICE_ID_1);
             bt_media_current_sbc_set(BT_DEVICE_NUM);
         }
@@ -5788,6 +5787,9 @@ int bt_sco_player(bool on, enum APP_SYSFREQ_FREQ_T freq)
 
     if (on)
     {
+#ifdef MIX_AUDIO_PROMPT_WITH_A2DP_MEDIA_ENABLED
+        audio_prompt_stop_playing();//add by cai for interrupt Prompt when there is a incoming call but Prompt is ongoing
+#endif
     	if((app_audio_manager_get_active_sco_num() != BT_DEVICE_ID_1)
 #ifdef __BT_ONE_BRING_TWO__
 		&& (app_audio_manager_get_active_sco_num() != BT_DEVICE_ID_2)
