@@ -1148,7 +1148,7 @@ void app_hfp_mute_upstream(uint8_t devId, bool isMute);
 /** add by pang**/
 #ifdef __BT_ONE_BRING_TWO__
 void hfp_suspend_another_device_a2dp(void);
-//static bool music_player_resume=0;
+static bool music_player_resume=0;
 #endif
 /** end add **/
 

@@ -598,7 +598,7 @@ bool app_bt_pause_music_player(uint8_t deviceId)
         app_bt_device.avrcp_channel[deviceId];
 
     TRACE(1,"Pause music player of device %d", deviceId);
-    app_bt_suspend_a2dp_streaming(deviceId);//for 8 patch by pang
+    //app_bt_suspend_a2dp_streaming(deviceId);//for 8 patch by pang
 
     btif_avrcp_set_panel_key(avrcp_channel_tmp,BTIF_AVRCP_POP_PAUSE,TRUE);
     btif_avrcp_set_panel_key(avrcp_channel_tmp,BTIF_AVRCP_POP_PAUSE,FALSE);
