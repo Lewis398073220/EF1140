@@ -1176,7 +1176,7 @@ static void hfp_audio_connected_handler(hf_chan_handle_t chan, struct hfp_contex
 
 #ifdef __BT_ONE_BRING_TWO__
 #ifdef SUSPEND_ANOTHER_DEV_A2DP_STREAMING_WHEN_CALL_IS_COMING
-    #if 1
+    #if 0
         if(app_bt_device.hf_audio_state[anotherDevice] == BTIF_HF_AUDIO_CON){
             TRACE(0,"::HF_EVENT_AUDIO_CONNECTED no need to update state");
             return;
@@ -1369,7 +1369,7 @@ static void hfp_audio_disconnected_handler(hf_chan_handle_t chan, struct hfp_con
 
 #ifdef __BT_ONE_BRING_TWO__
 #ifdef SUSPEND_ANOTHER_DEV_A2DP_STREAMING_WHEN_CALL_IS_COMING
-    #if 1
+    #if 0
     if (app_bt_is_to_resume_music_player(anotherDevice))
     {
         app_bt_resume_music_player(anotherDevice);
