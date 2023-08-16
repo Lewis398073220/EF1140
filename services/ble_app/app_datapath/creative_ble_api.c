@@ -133,7 +133,7 @@ void Get_Device_Information(uint8_t *data, uint32_t size)
 			packet.payload[6] = RESERVED;
 			packet.payload[7] = RESERVED;
 
-			TRACE(8,"FW_Version: %d.%d.%d%d%d.%d%d%d",MAJOR,MINOR,16+YR,MONTH,DAY,HR,QUARTER,PATCH);
+			TRACE(8,"FW_Version: %d.%d.%d%02d%02d.%02d%d%d",MAJOR,MINOR,16+YR,MONTH,DAY,HR,QUARTER,PATCH);
 			APP_Send_Notify((uint8_t *)(&packet), packetLen);
 			break;
 
