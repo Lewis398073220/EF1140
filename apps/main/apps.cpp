@@ -993,7 +993,13 @@ void app_bt_key_shutdown(APP_KEY_STATUS *status, void *param)
     hal_sw_bootmode_clear(HAL_SW_BOOTMODE_REBOOT);
     app_reset();
 #else
-	if(!app_call_status_get()) app_shutdown();//m by cai for not to power off when call is active
+
+#if 1
+	app_shutdown();
+#else//m by cai for not to power off when call is active
+	if(!app_call_status_get()) app_shutdown();
+#endif
+
 #endif
 }
 
