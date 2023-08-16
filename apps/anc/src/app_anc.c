@@ -2130,6 +2130,36 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 	//#endif
 }
 
+void app_key_set_anc_mode(void)
+{
+	switch(app_nvrecord_anc_table_get())
+	{
+		case ANC_HIGH:
+			app_nvrecord_anc_set(ANC_LOW);
+			app_set_anc_on_mode(ANC_LOW);
+			set_anc_mode(anc_on, 0);
+			app_voice_report(APP_STATUS_INDICATION_ALEXA_STOP, 0);
+			break;
+
+		case ANC_LOW:
+			app_nvrecord_anc_set(ANC_WIND);
+			app_set_anc_on_mode(ANC_WIND);
+			set_anc_mode(anc_on, 0);
+			app_voice_report(APP_STATUS_INDICATION_GSOUND_MIC_OPEN, 0);
+			break;
+
+		case ANC_WIND:
+			app_nvrecord_anc_set(ANC_HIGH);
+			app_set_anc_on_mode(ANC_HIGH);
+			set_anc_mode(anc_on, 0);
+			app_voice_report(APP_STATUS_INDICATION_ALEXA_START, 0);
+			break;
+			
+		default:
+			break;
+	}
+}
+
 #if 0
 void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 {

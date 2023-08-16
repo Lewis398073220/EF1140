@@ -74,6 +74,7 @@ enum ANC_TOGGLE_MODE//add by cai
 void app_anc_switch_turnled(bool on);
 void app_monitor_switch_turnled(bool on);
 void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param);
+void app_key_set_anc_mode(void);
 void app_monitor_Key_Pro(APP_KEY_STATUS *status, void *param);
 void set_anc_mode(uint8_t anc_new_mode,uint8_t prom_on);
 void app_monitor_moment(bool on);

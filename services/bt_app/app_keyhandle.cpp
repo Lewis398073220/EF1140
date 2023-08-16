@@ -1346,6 +1346,10 @@ void bt_key_handle_ANC_key(APP_KEY_STATUS *status, void *param)
 			bt_key_handle_game_key();
 			break;
 
+		case APP_KEY_EVENT_TRIPLECLICK:
+			app_key_set_anc_mode();
+			break;
+			
 		case APP_KEY_EVENT_LONGPRESS:
 			bt_key_handle_siri_key(APP_KEY_EVENT_LONGPRESS);
 			break;

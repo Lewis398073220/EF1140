@@ -135,14 +135,17 @@ const uint8_t EN_BT_WARNING[] = {
 
 const uint8_t EN_BT_ALEXA_START[] = {
 //#include "res/en/SOUND_ALEXA_START.txt"
+#include "res/en/EF1140_ANC_High_16000.txt"
 };
 
 const uint8_t EN_BT_ALEXA_STOP[] = {
 //#include "res/en/SOUND_ALEXA_STOP.txt"
+#include "res/en/EF1140_ANC_Low_16000.txt"
 };
 
 const uint8_t EN_BT_GSOUND_MIC_OPEN[] = {
 //#include "res/en/SOUND_GSOUND_MIC_OPEN.txt"
+#include "res/en/EF1140_ANC_Wind_16000.txt"
 };
 
 const uint8_t EN_BT_GSOUND_MIC_CLOSE[] = {
