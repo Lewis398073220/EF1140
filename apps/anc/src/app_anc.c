@@ -2386,7 +2386,7 @@ void set_anc_mode(uint8_t anc_new_mode,uint8_t prom_on)
 				
 				if(power_anc_init){
             		anc_work_status = ANC_STATUS_WAITING_ON;
-            		app_anc_timer_set(ANC_EVENT_OPEN, MS_TO_TICKS(4000));
+            		app_anc_timer_set(ANC_EVENT_OPEN, MS_TO_TICKS(1000));
 				}
 				else{
 					anc_work_status = ANC_STATUS_WAITING_ON;
