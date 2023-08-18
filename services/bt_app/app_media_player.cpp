@@ -67,6 +67,13 @@
 #include "app_ibrt_if.h"
 #include "app_ibrt_voice_report.h"
 #endif
+
+#include "app_user.h" //add by cai
+
+#if defined(AUDIO_LINEIN)
+extern int app_play_linein_onoff(bool onoff);//add by cai
+#endif
+
 #ifdef __INTERACTION__
 uint8_t g_findme_fadein_vol = TGT_VOLUME_LEVEL_0;
 #endif
@@ -1330,6 +1337,11 @@ int app_play_audio_onoff(bool onoff, APP_AUDIO_STATUS* status)
         return 0;
     }
     if (onoff ) {
+#if defined(__USE_3_5JACK_CTR__)
+	if(app_apps_3p5jack_plugin_flag(1)){
+		app_play_linein_onoff(0);
+	}
+#endif
 #if defined(__AI_VOICE__)||defined(BISTO_ENABLED)
         app_ai_if_inform_music_or_prompt_status(true, AUD_SAMPRATE_16000);
         app_ai_if_pre_music_or_prompt_check();
