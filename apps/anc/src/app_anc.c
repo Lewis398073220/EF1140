@@ -1379,6 +1379,14 @@ void app_anc_open_anc(void)
         	anc_sample_rate[AUD_STREAM_CAPTURE] = AUD_SAMPRATE_44100;
         	#endif
 		#endif
+
+		#if defined(AUDIO_LINEIN)
+		if(apps_3p5_jack_get_val())//add by cai for audio line in
+		{
+			anc_sample_rate[AUD_STREAM_PLAYBACK] = AUD_SAMPRATE_48000;
+        	anc_sample_rate[AUD_STREAM_CAPTURE] = AUD_SAMPRATE_48000;
+		}
+		#endif
 #endif
         anc_sample_rate[AUD_STREAM_PLAYBACK] = hal_codec_anc_convert_rate(anc_sample_rate[AUD_STREAM_PLAYBACK]);
         anc_sample_rate[AUD_STREAM_CAPTURE] = hal_codec_anc_convert_rate(anc_sample_rate[AUD_STREAM_CAPTURE]);

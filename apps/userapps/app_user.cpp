@@ -426,7 +426,7 @@ void apps_jack_event_process(void)
 		app_bt_stream_lineinvolume_set_user(17);//add by cai
 #endif
 		//jack_3p5_plug_in_flag=1;
-		//jack_count=0;
+		jack_count=0;
 	}
 	
 	if(++jack_count>2){
