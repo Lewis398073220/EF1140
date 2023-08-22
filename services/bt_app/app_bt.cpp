@@ -2731,7 +2731,7 @@ static void app_bt_update_connectable_mode_after_connection_management(void)
 			app_status_indication_set(APP_STATUS_INDICATION_AUDIO_LINEIN);
 			if((btif_me_get_activeCons() > 0) || (0 < app_bt_is_connected())) //add by cai
 			{
-				app_audio_sendrequest(APP_BT_STREAM_INVALID, (uint8_t)APP_BT_SETTING_CLOSEALL, 0);
+				//app_audio_sendrequest(APP_BT_STREAM_INVALID, (uint8_t)APP_BT_SETTING_CLOSEALL, 0);
 				//osDelay(500);
 				app_disconnect_all_bt_connections();
 			}	
