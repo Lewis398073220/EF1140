@@ -1968,18 +1968,23 @@ void app_gaming_mode(uint8_t game_on)
 	app_force_audio_retrigger();	
 }
 
-void api_gaming_mode(uint8_t game_on)
+uint8_t BLE_set_gaming_mode(uint8_t game_on, uint8_t prom_on)
 {
-    game_mode_on=game_on;
-	gaming_mode_set(game_on);
-	app_force_audio_retrigger();
+	HFCALL_MACHINE_ENUM hfcall_machine = app_get_hfcall_machine();
+	
+	if(hfcall_machine==HFCALL_MACHINE_CURRENT_IDLE_ANOTHER_IDLE){
+		hal_codec_dac_mute(1);
+		osDelay(60);
+	    app_gaming_mode(game_on);
+		osDelay(60);
+		hal_codec_dac_mute(0);
 
-	if(game_on){
-		app_voice_report(APP_STATUS_INDICATION_GAMING_ON, 0);
+		if(prom_on && game_on) app_voice_report(APP_STATUS_INDICATION_GAMING_ON, 0);
+		else if(prom_on && !game_on) app_voice_report(APP_STATUS_INDICATION_GAMING_OFF, 0);
+
+		return true;
 	}
-	else{
-		app_voice_report(APP_STATUS_INDICATION_GAMING_OFF, 0);
-	}
+	return false;
 }
 
 

@@ -266,6 +266,54 @@ void Get_Bluetooth_Support_Feature(uint8_t *data, uint32_t size)
 	APP_Send_Notify((uint8_t *)(&packet), packetLen);
 }
 
+void Set_Get_Low_Latency_Mode(uint8_t *data, uint32_t size)
+{
+	uint8_t OPTYPE = (uint8_t)data[4];
+	enum ACKNOWLEDGEMENT_STATUS_TABLE OPRESULT = GENERAL_SUCCESS;
+	
+	switch(OPTYPE)
+	{
+		case OPTYPE_LOW_LATENCY_MODE_QUERY:
+			TRACE(1,"%s: OPTYPE_LOW_LATENCY_MODE_QUERY\r\n",__func__);
+			packet.cmdID = CMDID_LOW_LATENCY_MODE;
+			packet.payloadLen = 0x02;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_LOW_LATENCY_MODE_QUERY;
+			packet.payload[1] = get_app_gaming_mode()? 1 : 0;
+			
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+
+		case OPTYPE_SET_LOW_LATENCY_MODE:
+			TRACE(1,"%s: OPTYPE_SET_LOW_LATENCY_MODE\r\n",__func__);
+			if((uint8_t)data[5] == 1)
+			{
+				if(BLE_set_gaming_mode(true, true)) OPRESULT = GENERAL_SUCCESS;
+				else OPRESULT = GENERAL_FAILURE;
+			} 
+			else if((uint8_t)data[5] == 0)
+			{
+				if(BLE_set_gaming_mode(false, true)) OPRESULT = GENERAL_SUCCESS;
+				else OPRESULT = GENERAL_FAILURE;
+			}
+			
+			packet.cmdID = CMDID_ACKNOWLEDGE_FROM_DEVICE;
+			packet.payloadLen = 0x04;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = CMDID_LOW_LATENCY_MODE;
+			packet.payload[1] = OPRESULT;
+			packet.payload[2] = OPTYPE_SET_LOW_LATENCY_MODE;
+			packet.payload[3] = get_app_gaming_mode()? 1 : 0;
+
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+		
+		default:
+			TRACE(2,"%s: undefined OPTYPE 0x%x!\r\n",__func__, OPTYPE);
+			break;
+	}
+}
+
 bool APP_Functions_Call(uint8_t *data, uint32_t size)
 {
 	uint8_t CMDID = (uint8_t)data[1];
@@ -290,6 +338,11 @@ bool APP_Functions_Call(uint8_t *data, uint32_t size)
 		case CMDID_BLUETOOTH_FEATURE_CONTROL:
 			TRACE(1,"%s: CMDID_BLUETOOTH_FEATURE_CONTROL\r\n",__func__);
 			Get_Bluetooth_Support_Feature(data, size);
+			return true;
+
+		case CMDID_LOW_LATENCY_MODE:
+			TRACE(1,"%s: CMDID_LOW_LATENCY_MODE\r\n",__func__);
+			Set_Get_Low_Latency_Mode(data, size);
 			return true;
 			
 		default:
