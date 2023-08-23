@@ -89,6 +89,16 @@ bool APP_Api_Entry(uint8_t *data, uint32_t size)
 	return true;
 }
 
+void Get_Max_Payload_Size(uint8_t *data, uint32_t size)
+{
+	packet.cmdID = CMDID_MAX_PAYLOAD_SIZE;
+	packet.payloadLen = 0x02;
+	packetLen = packet.payloadLen + 4;
+	*((uint16_t *)packet.payload) = 150;//设备能够处理的最大负载大小
+
+	APP_Send_Notify((uint8_t *)(&packet), packetLen);
+}
+
 uint32_t FW_Version = (MAJOR << 29)|(MINOR << 23)|(YR << 19)|(MONTH << 15)|(DAY << 10)|(HR << 5)|(QUARTER << 3)|PATCH;
 uint8_t SN_String[10] = {'0','0','0','0','0','0','0','0','0','\0'};
 void Get_Device_Information(uint8_t *data, uint32_t size)
@@ -320,6 +330,11 @@ bool APP_Functions_Call(uint8_t *data, uint32_t size)
 		   
 	switch(CMDID)
 	{
+		case CMDID_MAX_PAYLOAD_SIZE:
+			TRACE(1,"%s: CMDID_MAX_PAYLOAD_SIZE\r\n",__func__);
+			Get_Max_Payload_Size(data, size);
+			return true;
+			
 		case CMDID_DEVICE_INFORMATION:
 			TRACE(1,"%s: CMDID_DEVICE_INFORMATION\r\n",__func__);
 			Get_Device_Information(data, size);
