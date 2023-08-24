@@ -163,7 +163,7 @@ static HWTIMER_ID anc_timerid = NULL;
 #define anc_init_switch_off_time (MS_TO_TICKS(1000 * 60 * 2))
 #define anc_auto_power_off_time (MS_TO_TICKS(1000 * 60 * 60))
 #define anc_switch_on_time (MS_TO_TICKS(600))
-#define anc_close_delay_time (MS_TO_TICKS(1000 * 1)) //(1000 * 20)  m by pang
+#define anc_close_delay_time (MS_TO_TICKS(1000 * 2)) //(1000 * 20)  m by pang
 #define anc_pwr_key_monitor_time (MS_TO_TICKS(1500))
 #define anc_switch_key_debonce_time (MS_TO_TICKS(40))
 
@@ -2357,9 +2357,6 @@ void set_anc_status(enum ANC_STATUS anc_new_status,uint8_t prom_on)
 		//app_anc_switch_turnled(true);
 		//app_monitor_switch_turnled(false);
 #endif
-#ifdef MEDIA_PLAYER_SUPPORT	
-		if(prom_on) app_voice_report(APP_STATUS_INDICATION_ANC_ON, 0);
-#endif
 	}
 	else if(anc_new_status == AMBIENT_ON)
 	{
@@ -2369,10 +2366,7 @@ void set_anc_status(enum ANC_STATUS anc_new_status,uint8_t prom_on)
 #ifdef ANC_LED_PIN
 		//app_monitor_switch_turnled(true);
 		//app_anc_switch_turnled(false);
-#endif
-#ifdef MEDIA_PLAYER_SUPPORT
-		if(prom_on) app_voice_report(APP_STATUS_INDICATION_MONITOR_ON, 0);
-#endif		
+#endif	
 	}
 	else
 	{
@@ -2380,9 +2374,6 @@ void set_anc_status(enum ANC_STATUS anc_new_status,uint8_t prom_on)
 #ifdef ANC_LED_PIN
 		//app_anc_switch_turnled(false);
 #endif		
-#ifdef MEDIA_PLAYER_SUPPORT
-		if(prom_on) app_voice_report(APP_STATUS_INDICATION_ANC_OFF, 0);
-#endif
 	}
 
 	switch (anc_work_status)
@@ -2445,6 +2436,12 @@ void set_anc_status(enum ANC_STATUS anc_new_status,uint8_t prom_on)
 	if(power_anc_init){
 		power_anc_init=0;
 	}
+
+#ifdef MEDIA_PLAYER_SUPPORT
+	if(prom_on && anc_new_status == ANC_ON) app_voice_report(APP_STATUS_INDICATION_ANC_ON, 0);
+	else if(prom_on && anc_new_status == AMBIENT_ON) app_voice_report(APP_STATUS_INDICATION_MONITOR_ON, 0);
+	else if(prom_on && anc_new_status == ANC_OFF) app_voice_report(APP_STATUS_INDICATION_ANC_OFF, 0);
+#endif	
 }
 
 void app_monitor_moment(bool on)
