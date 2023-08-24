@@ -174,6 +174,7 @@ struct nvrecord_env_t {
 struct p_nvrecord_env_t {
 	IIR_CFG_T custom_eq_ancon;
 	IIR_CFG_T custom_eq_ancoff;
+	uint8_t anc_on_mode;
 };
 /** end add **/
 

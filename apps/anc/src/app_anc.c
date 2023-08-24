@@ -189,8 +189,8 @@ extern void analog_aud_enable_dac_pa(uint8_t dac);
 /** add by pang **/
 #include "app_bt_stream.h"
 
-static enum ANC_STATUS anc_current_status = anc_on;
-static enum ANC_ON_MODE anc_on_mode = anc_high;//add by pang
+static enum ANC_STATUS anc_current_status = ANC_ON;
+static enum ANC_ON_MODE anc_on_mode = ANC_HIGH_MODE;//add by pang
 static enum MONITOR_ON_MODE monitor_mode = monitor1;//add by pang
 static enum ANC_TOGGLE_MODE anc_toggle_method = AncOn_AncOff_Awareness;
 
@@ -199,19 +199,14 @@ enum ANC_STATUS app_get_anc_status(void)
 	return (anc_current_status);
 }
 
-enum ANC_ON_MODE app_get_anc_on_mode(void)
+enum ANC_ON_MODE current_anc_on_mode_get(void)
 {
 	return (anc_on_mode);
 }
 
-void app_set_anc_on_mode(enum APP_ANC_MODE_STATUS anc_on_new_mode)
+void anc_on_mode_set(enum ANC_ON_MODE anc_on_new_mode)
 {
-    if(anc_on_new_mode == ANC_HIGH)
-	   anc_on_mode = anc_high;
-	else if(anc_on_new_mode == ANC_LOW)
-	   anc_on_mode = anc_low;
-	else //if(anc_on_new_mode==3)
-	   anc_on_mode = anc_wind;
+    anc_on_mode = anc_on_new_mode;
 }
 
 enum MONITOR_ON_MODE app_get_monitor_mode(void)
@@ -241,15 +236,15 @@ enum APP_ANC_MODE_STATUS app_get_anc_mode_status(void)
 {
     enum APP_ANC_MODE_STATUS anc_status = NC_INVALID;
 	
-	if(anc_current_status==anc_off){
+	if(anc_current_status==ANC_OFF){
 		anc_status = NC_OFF;
 	}
-	else if(anc_current_status==anc_on){
-		if(anc_on_mode==anc_high)
+	else if(anc_current_status==ANC_ON){
+		if(anc_on_mode==ANC_HIGH_MODE)
 			anc_status=ANC_HIGH;
-		else if(anc_on_mode==anc_low)
+		else if(anc_on_mode==ANC_LOW_MODE)
 			anc_status=ANC_LOW;
-		else //(anc_on_mode==anc_wind)
+		else //(anc_on_mode==ANC_WIND_MODE)
 			anc_status=ANC_WIND;
 	}
 	else{
@@ -264,28 +259,28 @@ void poweron_set_anc(void)
 	anc_mode_poweron = app_nvrecord_anc_status_get();
 	
 	if(anc_mode_poweron == ANC_HIGH){
-		anc_current_status = anc_on;
-		anc_on_mode = anc_high;
+		anc_current_status = ANC_ON;
+		anc_on_mode = ANC_HIGH_MODE;
 	}
 	else if(anc_mode_poweron == ANC_LOW){
-		anc_current_status = anc_on;
-		anc_on_mode = anc_low;
+		anc_current_status = ANC_ON;
+		anc_on_mode = ANC_LOW_MODE;
 	}
 	else if(anc_mode_poweron == ANC_WIND){
-		anc_current_status = anc_on;
-		anc_on_mode = anc_wind;
+		anc_current_status = ANC_ON;
+		anc_on_mode = ANC_WIND_MODE;
 	}
 	else if(anc_mode_poweron == MONITOR_ON){
-		anc_current_status = monitor;
+		anc_current_status = AMBIENT_ON;
 		app_set_monitor_mode(app_get_monitor_level());
 	}
 	else {
-		anc_current_status = anc_off;
+		anc_current_status = ANC_OFF;
 	}
 	
-	app_set_anc_on_mode(app_nvrecord_anc_table_get());
+	anc_on_mode_set(app_noise_reduction_mode_get());
 	app_set_monitor_mode(app_get_monitor_level());
-	set_anc_mode(anc_current_status, 0);	
+	set_anc_status(anc_current_status, 0);	
 }
 
 enum ANC_TOGGLE_MODE app_get_anc_toggle_mode(void)
@@ -1893,9 +1888,9 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 	//TRACE(2," %s anc_current_status: %d", __func__, anc_current_status);
 
 	if(app_get_anc_toggle_mode()==AncOn_AncOff_Awareness) {//m by cai for ANC toggle method define function
-		if(anc_current_status == monitor)
+		if(anc_current_status == AMBIENT_ON)
 		{	
-			anc_current_status = anc_on; 
+			anc_current_status = ANC_ON; 
 			anc_coef_idx = anc_on_mode;
 			
 			anc_open_flag=1;
@@ -1913,9 +1908,9 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 #endif
 			}
 		}
-		else if(anc_current_status == anc_off)
+		else if(anc_current_status == ANC_OFF)
 		{
-			anc_current_status = monitor;
+			anc_current_status = AMBIENT_ON;
 			anc_coef_idx = monitor_mode;
 			anc_open_flag=1;
 #ifdef ANC_LED_PIN
@@ -1928,7 +1923,7 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 		}
 		else
 		{
-			anc_current_status = anc_off;
+			anc_current_status = ANC_OFF;
 #ifdef ANC_LED_PIN
 			app_anc_switch_turnled(false);
 #endif		
@@ -1937,9 +1932,9 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 #endif
 		}
 	}else if(app_get_anc_toggle_mode()==AncOn_Awareness) {
-		if(anc_current_status == monitor)
+		if(anc_current_status == AMBIENT_ON)
 		{	
-			anc_current_status = anc_on; 
+			anc_current_status = ANC_ON; 
 			anc_coef_idx = anc_on_mode;
 			
 			anc_open_flag=1;
@@ -1957,9 +1952,9 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 #endif
 			}
 		}
-		else if(anc_current_status == anc_off)
+		else if(anc_current_status == ANC_OFF)
 		{
-			anc_current_status = monitor;
+			anc_current_status = AMBIENT_ON;
 			anc_coef_idx = monitor_mode;
 			anc_open_flag=1;
 #ifdef ANC_LED_PIN
@@ -1972,7 +1967,7 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 		}
 		else
 		{
-			anc_current_status = monitor;
+			anc_current_status = AMBIENT_ON;
 			anc_coef_idx = monitor_mode;
 			anc_open_flag=1;
 #ifdef ANC_LED_PIN
@@ -1984,9 +1979,9 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 #endif
 		}
 	}else if(app_get_anc_toggle_mode()==AncOn_AncOff) {
-		if(anc_current_status == monitor)
+		if(anc_current_status == AMBIENT_ON)
 		{	
-			anc_current_status = anc_on; 
+			anc_current_status = ANC_ON; 
 			anc_coef_idx = anc_on_mode;
 			
 			anc_open_flag=1;
@@ -2004,9 +1999,9 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 #endif
 			}
 		}
-		else if(anc_current_status == anc_off)
+		else if(anc_current_status == ANC_OFF)
 		{
-			anc_current_status = anc_on; 
+			anc_current_status = ANC_ON; 
 			anc_coef_idx = anc_on_mode;
 			
 			anc_open_flag=1;
@@ -2027,7 +2022,7 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 		}
 		else
 		{
-			anc_current_status = anc_off;
+			anc_current_status = ANC_OFF;
 #ifdef ANC_LED_PIN
 			app_anc_switch_turnled(false);
 #endif		
@@ -2036,9 +2031,9 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 #endif
 		}
 	}else if(app_get_anc_toggle_mode()==Awareness_AncOff){
-		if(anc_current_status == monitor)
+		if(anc_current_status == AMBIENT_ON)
 		{	
-			anc_current_status = anc_off;
+			anc_current_status = ANC_OFF;
 #ifdef ANC_LED_PIN
 			app_anc_switch_turnled(false);
 #endif		
@@ -2046,9 +2041,9 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 			app_voice_report(APP_STATUS_INDICATION_ANC_OFF, 0);
 #endif
 		}
-		else if(anc_current_status == anc_off)
+		else if(anc_current_status == ANC_OFF)
 		{
-			anc_current_status = monitor;
+			anc_current_status = AMBIENT_ON;
 			anc_coef_idx = monitor_mode;
 			anc_open_flag=1;
 #ifdef ANC_LED_PIN
@@ -2061,7 +2056,7 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 		}
 		else
 		{
-			anc_current_status = anc_off;
+			anc_current_status = ANC_OFF;
 #ifdef ANC_LED_PIN
 			app_anc_switch_turnled(false);
 #endif		
@@ -2144,28 +2139,35 @@ void app_key_set_anc_mode(void)
 	{
 		case ANC_HIGH:
 			app_nvrecord_anc_set(ANC_LOW);
-			app_set_anc_on_mode(ANC_LOW);
-			set_anc_mode(anc_on, 0);
+			anc_on_mode_set(ANC_LOW_MODE);
+			set_anc_status(ANC_ON, 0);
 			app_voice_report(APP_STATUS_INDICATION_ALEXA_STOP, 0);
 			break;
 
 		case ANC_LOW:
 			app_nvrecord_anc_set(ANC_WIND);
-			app_set_anc_on_mode(ANC_WIND);
-			set_anc_mode(anc_on, 0);
+			anc_on_mode_set(ANC_WIND_MODE);
+			set_anc_status(ANC_ON, 0);
 			app_voice_report(APP_STATUS_INDICATION_GSOUND_MIC_OPEN, 0);
 			break;
 
 		case ANC_WIND:
 			app_nvrecord_anc_set(ANC_HIGH);
-			app_set_anc_on_mode(ANC_HIGH);
-			set_anc_mode(anc_on, 0);
+			anc_on_mode_set(ANC_HIGH_MODE);
+			set_anc_status(ANC_ON, 0);
 			app_voice_report(APP_STATUS_INDICATION_ALEXA_START, 0);
 			break;
 			
 		default:
 			break;
 	}
+}
+
+void BLE_noise_control_mode_set(enum ANC_STATUS anc_new_status, enum ANC_ON_MODE nr, uint8_t prom_on)
+{
+	app_p_nvrecord_noise_reduction_mode_set(nr);
+	anc_on_mode_set(nr);
+	set_anc_status(anc_new_status, prom_on);
 }
 
 #if 0
@@ -2195,7 +2197,7 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 	}
 	else
 	{
-		anc_current_mode = anc_off;
+		anc_current_mode = ANC_OFF;
 #ifdef ANC_LED_PIN
 		app_anc_switch_turnled(false);
 #endif		
@@ -2275,7 +2277,7 @@ void app_monitor_Key_Pro(APP_KEY_STATUS *status, void *param)
 	}
 	else
 	{
-		anc_current_mode = anc_off;	
+		anc_current_mode = ANC_OFF;	
 #ifdef ANC_LED_PIN
 		app_monitor_switch_turnled(false);
 #endif
@@ -2337,7 +2339,7 @@ void app_monitor_Key_Pro(APP_KEY_STATUS *status, void *param)
 }
 #endif
 
-void set_anc_mode(uint8_t anc_new_mode,uint8_t prom_on)
+void set_anc_status(enum ANC_STATUS anc_new_status,uint8_t prom_on)
 {
 	static bool power_anc_init=1;
 	bool anc_open_flag=0;
@@ -2345,9 +2347,9 @@ void set_anc_mode(uint8_t anc_new_mode,uint8_t prom_on)
 	//if(anc_current_mode==anc_new_mode)
 		//return;
 
-	if(anc_new_mode == anc_on)
+	if(anc_new_status == ANC_ON)
 	{	
-		anc_current_status = anc_on; 
+		anc_current_status = ANC_ON; 
 		anc_coef_idx = anc_on_mode;
 	    anc_open_flag=1;
 
@@ -2356,13 +2358,12 @@ void set_anc_mode(uint8_t anc_new_mode,uint8_t prom_on)
 		//app_monitor_switch_turnled(false);
 #endif
 #ifdef MEDIA_PLAYER_SUPPORT	
-		if(prom_on)
-		app_voice_report(APP_STATUS_INDICATION_ANC_ON, 0);
+		if(prom_on) app_voice_report(APP_STATUS_INDICATION_ANC_ON, 0);
 #endif
 	}
-	else if(anc_new_mode == monitor)
+	else if(anc_new_status == AMBIENT_ON)
 	{
-		anc_current_status = monitor;
+		anc_current_status = AMBIENT_ON;
 		anc_coef_idx = monitor_mode;
 		anc_open_flag=1;	
 #ifdef ANC_LED_PIN
@@ -2370,19 +2371,17 @@ void set_anc_mode(uint8_t anc_new_mode,uint8_t prom_on)
 		//app_anc_switch_turnled(false);
 #endif
 #ifdef MEDIA_PLAYER_SUPPORT
-		if(prom_on)
-		app_voice_report(APP_STATUS_INDICATION_MONITOR_ON, 0);
+		if(prom_on) app_voice_report(APP_STATUS_INDICATION_MONITOR_ON, 0);
 #endif		
 	}
 	else
 	{
-		anc_current_status = anc_off;
+		anc_current_status = ANC_OFF;
 #ifdef ANC_LED_PIN
 		//app_anc_switch_turnled(false);
 #endif		
 #ifdef MEDIA_PLAYER_SUPPORT
-		if(prom_on)
-		app_voice_report(APP_STATUS_INDICATION_ANC_OFF, 0);
+		if(prom_on) app_voice_report(APP_STATUS_INDICATION_ANC_OFF, 0);
 #endif
 	}
 
@@ -2460,11 +2459,11 @@ void app_monitor_moment(bool on)
 	}
 	else{
 		TRACE(1,"***%s recover", __func__);		
-		if(anc_current_status==anc_on){	
+		if(anc_current_status==ANC_ON){	
 			anc_coef_idx=anc_on_mode;
 			anc_open_flag=1;
 		}
-		else if(anc_current_status==monitor){
+		else if(anc_current_status==AMBIENT_ON){
 			anc_coef_idx=monitor_mode;
 			anc_open_flag=1;
 		}			

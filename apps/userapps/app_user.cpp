@@ -94,6 +94,7 @@ static uint8_t demo_mode_on = 0;
 static uint8_t demo_mode_powron = 0;
 static uint8_t app_color_change_flag = 0;
 static uint8_t app_color_value = 0x00;
+static enum ANC_ON_MODE noise_reduction_mode = ANC_HIGH_MODE;
 #endif
 
 //static bool boom_mic_enable=0;
@@ -1274,6 +1275,25 @@ void app_nvrecord_anc_set(enum APP_ANC_MODE_STATUS nc)
 #endif
 }
 
+void app_p_nvrecord_noise_reduction_mode_set(enum ANC_ON_MODE nr)
+{
+	noise_reduction_mode = nr;
+
+	struct p_nvrecord_env_t *p_nvrecord_env;
+	p_nv_record_env_get(&p_nvrecord_env);
+	p_nvrecord_env->anc_on_mode = nr;
+	p_nv_record_env_set(p_nvrecord_env);
+
+#if FPGA==0
+	//nv_record_flash_flush();
+#endif
+}
+
+enum ANC_ON_MODE app_noise_reduction_mode_get(void)
+{
+	return noise_reduction_mode;
+}
+
 uint8_t app_get_monitor_level(void)
 {
 	return (monitor_level);
@@ -2009,6 +2029,7 @@ void app_nvrecord_para_get(void)
 	p_nv_record_env_get(&p_nvrecord_env);
 	eq_custom_para_ancon=p_nvrecord_env->custom_eq_ancon;
 	eq_custom_para_ancoff=p_nvrecord_env->custom_eq_ancoff;
+	noise_reduction_mode = (enum ANC_ON_MODE)p_nvrecord_env->anc_on_mode;
 
 #if 0  
 	for(uint8_t i=0;i<10;i++){
@@ -2044,7 +2065,7 @@ void app_nvrecord_para_get(void)
 #endif
 
 	TRACE(5,"sleep_time=%d, eq_set_index=%d, monitor_level=%d, focus_on=%d, multipoint=%d",sleep_time,eq_set_index,monitor_level,focus_on,multipoint);
-	TRACE(3,"auto_poweroff_time=%d, app_color_change_flag=%d, app_color_value=%d", auto_poweroff_time,app_color_change_flag,app_color_value);
+	TRACE(4,"auto_poweroff_time=%d, app_color_change_flag=%d, app_color_value=%d, noise_reduction_mode=%d", auto_poweroff_time,app_color_change_flag,app_color_value,noise_reduction_mode);
 }
 
 void app_nvrecord_para_default(void)
@@ -2058,7 +2079,7 @@ void app_nvrecord_para_default(void)
 	eq_set_index=0;
 	anc_set_index=NC_OFF;
 	monitor_level=20;
-	app_set_anc_on_mode(ANC_HIGH);
+	anc_on_mode_set(ANC_HIGH_MODE);
 	focus_on=0;
 	touch_lock=0;
 	sidetone=0;
@@ -2099,7 +2120,7 @@ void app_nvrecord_para_default(void)
     nv_record_flash_flush();
 #endif
 
-	set_anc_mode(anc_off,0);
+	set_anc_status(ANC_OFF,0);
 	app_gaming_mode(0);
 	change_eq_from_ble_api(0);
 }

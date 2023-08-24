@@ -266,6 +266,7 @@ static void nv_record_set_default(NV_EXTENSION_RECORD_T *nv_record)
 {
     memset((uint8_t*)nv_record, 0 ,sizeof(NV_EXTENSION_RECORD_T));
     nvrecord_rebuild_system_env(&(nv_record->system_info));
+	nvrecord_rebuild_system_env_user(&(nv_record->p_system_info));//add by cai
     nvrecord_rebuild_paired_bt_dev_info(&(nv_record->bt_pair_info));
     nvrecord_rebuild_paired_ble_dev_info(&(nv_record->ble_pair_info));
 #ifdef GFPS_ENABLED

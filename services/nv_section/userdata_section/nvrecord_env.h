@@ -35,6 +35,7 @@ int nv_record_env_get(struct nvrecord_env_t **nvrecord_env);
 int nv_record_env_set(struct nvrecord_env_t *nvrecord_env);
 void nv_record_update_ibrt_info(uint32_t newMode,bt_bdaddr_t *ibrtPeerAddr);
 void nvrecord_rebuild_system_env(struct nvrecord_env_t* pSystemEnv);
+void nvrecord_rebuild_system_env_user(struct p_nvrecord_env_t* pSystemEnv);//add by cai
 void nv_record_update_factory_tester_status(uint32_t status);
 
 /** add by pang **/

@@ -109,6 +109,15 @@ int nv_record_env_set(struct nvrecord_env_t *nvrecord_env)
 }
 
 /** add by pang **/
+void nvrecord_rebuild_system_env_user(struct p_nvrecord_env_t* pSystemEnv)
+{
+    memset((uint8_t *)pSystemEnv, 0, sizeof(struct nvrecord_env_t));
+    
+	pSystemEnv->anc_on_mode = ANC_HIGH_MODE;
+
+    p_localSystemInfo = *pSystemEnv;
+}
+
 int p_nv_record_env_get(struct p_nvrecord_env_t **nvrecord_env)
 {
     if (NULL == nvrecord_env)

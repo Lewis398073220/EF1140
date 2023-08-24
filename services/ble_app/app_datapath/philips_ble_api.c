@@ -1082,11 +1082,11 @@ void Set_ANC_Mode_Status(uint8_t set_anc_mode_status_value[1])
 
 	app_nvrecord_anc_set(anc_mode_status_value);
 	if(anc_mode_status_value == NC_OFF){
-		set_anc_mode(anc_off, 0);
+		set_anc_status(ANC_OFF, 0);
 	}
 	else{
-	 	app_set_anc_on_mode(anc_mode_status_value);
-	 	set_anc_mode(anc_on, 0);
+	 	//app_set_anc_on_mode(anc_mode_status_value);
+	 	set_anc_status(ANC_ON, 0);
 	}
 }
 
@@ -1131,11 +1131,11 @@ void Set_Awareness_Value(uint8_t set_awareness_value[2])
 
 	//Go to Set awareness function.
 	if(g_set_awareness_value[0]==0){
-		set_anc_mode(anc_on, 0);
+		set_anc_status(ANC_ON, 0);
 	}
 	else{
 		app_set_monitor_mode(g_set_awareness_value[0]);
-		set_anc_mode(monitor, 0);
+		set_anc_status(AMBIENT_ON, 0);
 	}   
 }
 
@@ -1173,7 +1173,7 @@ void Set_Enhance_Voice_Value(uint8_t set_enhance_voice_value[2])
 
 	//app_set_clearvoice_mode(g_set_awareness_value[0]);//m by cai
 	app_set_monitor_mode(g_set_awareness_value[0]);//add by cai
-	set_anc_mode(monitor, 0);//m by cai 
+	set_anc_status(AMBIENT_ON, 0);//m by cai 
 }
  
 void Get_ANC_Table_Value(void)

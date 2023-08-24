@@ -26,16 +26,16 @@ extern "C" {
 /** add by pang **/
 enum ANC_STATUS
 {
-	anc_off = 0,
-	anc_on,
-	monitor,
+	ANC_OFF = 0,
+	ANC_ON,
+	AMBIENT_ON,
 };
 
 enum ANC_ON_MODE
 {
-	anc_high = 0,
-	anc_low,
-	anc_wind,
+	ANC_HIGH_MODE = 0,
+	ANC_LOW_MODE,
+	ANC_WIND_MODE,
 };
 
 enum MONITOR_ON_MODE
@@ -75,14 +75,14 @@ void app_anc_switch_turnled(bool on);
 void app_monitor_switch_turnled(bool on);
 void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param);
 void app_key_set_anc_mode(void);
+void BLE_noise_control_mode_set(enum ANC_STATUS anc_new_status, enum ANC_ON_MODE nr, uint8_t prom_on);
 void app_monitor_Key_Pro(APP_KEY_STATUS *status, void *param);
-void set_anc_mode(uint8_t anc_new_mode,uint8_t prom_on);
+void set_anc_status(enum ANC_STATUS anc_new_status,uint8_t prom_on);
 void app_monitor_moment(bool on);
 void app_anc_power_off(void);
-void app_set_anc_on_mode(enum APP_ANC_MODE_STATUS anc_on_new_mode);
 enum ANC_STATUS app_get_anc_status(void);
-enum ANC_ON_MODE app_get_anc_on_mode(void);
-void app_set_anc_on_mode(enum APP_ANC_MODE_STATUS anc_on_new_mode);
+enum ANC_ON_MODE current_anc_on_mode_get(void);
+void anc_on_mode_set(enum ANC_ON_MODE anc_on_new_mode);
 enum MONITOR_ON_MODE app_get_monitor_mode(void);
 void app_set_monitor_mode(uint8_t monitor_new_level);
 enum APP_ANC_MODE_STATUS app_get_anc_mode_status(void);

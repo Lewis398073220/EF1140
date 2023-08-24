@@ -1540,7 +1540,7 @@ uint8_t bt_audio_updata_eq_for_anc(uint8_t anc_status)
 {
     //anc_status = app_anc_work_status();
 	anc_status = app_get_anc_status();//m by cai
-	enum ANC_ON_MODE anc_on_mode = app_get_anc_on_mode();
+	enum ANC_ON_MODE anc_on_mode = current_anc_on_mode_get();
 		
     if(anc_status_record != anc_status || (anc_mode_record != anc_on_mode))//m by cai
     {
@@ -1689,17 +1689,17 @@ uint32_t bt_audio_set_eq(AUDIO_EQ_TYPE_T audio_eq_type, uint8_t index)
 			iir_cfg=audio_eq_sw_iir_cfg_list[index];
 #else //m by cai
 			uint8_t eq_index=app_eq_index_get();
-			enum ANC_ON_MODE anc_on_mode = app_get_anc_on_mode();
+			enum ANC_ON_MODE anc_on_mode = current_anc_on_mode_get();
 
 			TRACE(3,"***%s: eq_index=%d, anc_on_mode=%d", __func__, eq_index, anc_on_mode);
 			
 			if(eq_index < 5){
-				if(anc_on_mode == anc_low) iir_cfg = audio_eq_sw_iir_cfg_list[3 + eq_index*4]; 
+				if(anc_on_mode == ANC_LOW_MODE) iir_cfg = audio_eq_sw_iir_cfg_list[3 + eq_index*4]; 
 				else iir_cfg = audio_eq_sw_iir_cfg_list[index + eq_index*4]; 
 			}
 			else if(eq_index == 0x3f){//m by cai to 0x3f
-				if(index == anc_on) {
-					if(anc_on_mode == anc_low) iir_cfg= &eq_custom_para_anc_off;
+				if(index == ANC_ON) {
+					if(anc_on_mode == ANC_LOW_MODE) iir_cfg= &eq_custom_para_anc_off;
 					else iir_cfg= &eq_custom_para;
 				}	
 				else 

@@ -240,7 +240,7 @@ static void btusb_swtimer_handler(void const *param)
 #if defined(__CHARGE_CURRRENT__)
 		hal_gpio_pin_set((enum HAL_GPIO_PIN_T)cfg_charge_current_control.pin);//add by cai for enter nomal charging mode when usb is not configed.
 #endif
-		if(app_battery_is_charging()) set_anc_mode(anc_off, 0);//add by cai for close ANC when usb is not configed
+		if(app_battery_is_charging()) set_anc_status(ANC_OFF, 0);//add by cai for close ANC when usb is not configed
 	} else{
 		usb_configured_flag = 1;
 #if defined(__CHARGE_CURRRENT__)

@@ -313,28 +313,28 @@ static void app_tota_vendor_cmd_handler(APP_TOTA_CMD_CODE_E funcCode, uint8_t* p
 			if(resData[0]==0x51){
 				if(resData[1]==0x01){
 					TRACE(1,"OP_TOTA_ANCMODE1_ONLY_CMD");
-					app_set_anc_on_mode(ANC_HIGH);
-					set_anc_mode(anc_on, 0);
+					anc_on_mode_set(ANC_HIGH_MODE);
+					set_anc_status(ANC_ON, 0);
 				}
 				else if(resData[1]==0x02){
 					TRACE(1,"OP_TOTA_ANCMODE2_ONLY_CMD");
-					app_set_anc_on_mode(ANC_LOW);
-					set_anc_mode(anc_on, 0);
+					anc_on_mode_set(ANC_LOW_MODE);
+					set_anc_status(ANC_ON, 0);
 				}
 				else if(resData[1]==0x03){
 					TRACE(1,"OP_TOTA_ANCMODE3_ONLY_CMD");
-					app_set_anc_on_mode(ANC_WIND);
-					set_anc_mode(anc_on, 0);
+					anc_on_mode_set(ANC_WIND_MODE);
+					set_anc_status(ANC_ON, 0);
 				}
 				else if(resData[1]==0x05){
 					TRACE(1,"OP_TOTA_MONITOR_ONLY_CMD");
 					app_focus_set_no_save(false);
 					app_set_monitor_mode(20);
-					set_anc_mode(monitor, 0);
+					set_anc_status(AMBIENT_ON, 0);
 				}
 				else if(resData[1]==0x00){
 					TRACE(1,"OP_TOTA_ANCOFF_ONLY_CMD");
-					set_anc_mode(anc_off, 0);
+					set_anc_status(ANC_OFF, 0);
 				}
 			}
 			if(resData[0]==0x52){

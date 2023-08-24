@@ -342,15 +342,18 @@ void Set_Get_Noise_Control(uint8_t *data, uint32_t size)
 			packet.payloadLen = 0x02;
 			packetLen = packet.payloadLen + 4;
 			packet.payload[0] = OPTYPE_CURRENT_NOISE_CONTROL_MODE_QUERY;
-			if(anc_status == anc_on) packet.payload[1] = ACTIVE_NOISE_REDUCTION;
-			else if(anc_status == monitor) packet.payload[1] = AMBIENT_MODE;
+			if(anc_status == ANC_ON) packet.payload[1] = ACTIVE_NOISE_REDUCTION;
+			else if(anc_status == AMBIENT_ON) packet.payload[1] = AMBIENT_MODE;
 			else packet.payload[1] = OFF;
 			
 			APP_Send_Notify((uint8_t *)(&packet), packetLen);
 			break;
 
 		case OPTYPE_SET_ACTIVE_NOISE_CONTROL_MODE:
-			TRACE(1,"%s: OPTYPE_SET_ACTIVE_NOISE_CONTROL_MODE\r\n",__func__);
+			TRACE(1,"%s: OPTYPE_SET_ACTIVE_NOISE_CONTROL_MODE\r\n",__func__); 
+			if(data[5] == ACTIVE_NOISE_REDUCTION) BLE_noise_control_mode_set(ANC_ON, current_anc_on_mode_get(), true);
+			else if(data[5] == AMBIENT_MODE) BLE_noise_control_mode_set(AMBIENT_ON, current_anc_on_mode_get(), true);
+			else BLE_noise_control_mode_set(ANC_OFF, current_anc_on_mode_get(), true);
 			
 			break;
 			
