@@ -276,6 +276,90 @@ void Get_Bluetooth_Support_Feature(uint8_t *data, uint32_t size)
 	APP_Send_Notify((uint8_t *)(&packet), packetLen);
 }
 
+void Set_Get_Noise_Control(uint8_t *data, uint32_t size)
+{
+	uint8_t OPTYPE = (uint8_t)data[4];
+	enum ANC_STATUS anc_status = app_get_anc_status();
+
+	switch(OPTYPE)
+	{
+		case OPTYPE_SUPPORTED_NOISE_CONTROL_MODE_QUERY:
+			TRACE(1,"%s: OPTYPE_SUPPORTED_NOISE_CONTROL_MODE_QUERY\r\n",__func__);
+			packet.cmdID = CMDID_NOISE_CONTROL;
+			packet.payloadLen = 0x02;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_SUPPORTED_NOISE_CONTROL_MODE_QUERY;
+			packet.payload[1] = OFF | ACTIVE_NOISE_REDUCTION | AMBIENT_MODE;
+			
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+
+		case OPTYPE_NOISE_CONTROL_MODE_RANGE_QUERY:
+			TRACE(1,"%s: OPTYPE_NOISE_CONTROL_MODE_RANGE_QUERY\r\n",__func__);
+			packet.cmdID = CMDID_NOISE_CONTROL;
+			packet.payloadLen = 0x04;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_NOISE_CONTROL_MODE_RANGE_QUERY;
+			if(data[5] == ACTIVE_NOISE_REDUCTION)
+			{
+				packet.payload[1] = ACTIVE_NOISE_REDUCTION;
+				packet.payload[2] = 4;//Noise Control Min level
+				packet.payload[3] = 4;//Noise Control Max level
+			}
+			else if(data[5] == AMBIENT_MODE)
+			{
+				packet.payload[1] = AMBIENT_MODE;
+				packet.payload[2] = 0;//Noise Control Min level
+				packet.payload[3] = 4;//Noise Control Max level
+			}
+			
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+
+		case OPTYPE_NOISE_CONTROL_MODE_LEVEL_QUERY:
+			TRACE(1,"%s: OPTYPE_NOISE_CONTROL_MODE_LEVEL_QUERY\r\n",__func__);
+			packet.cmdID = CMDID_NOISE_CONTROL;
+			packet.payloadLen = 0x03;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_NOISE_CONTROL_MODE_LEVEL_QUERY;
+			if(data[5] == ACTIVE_NOISE_REDUCTION)
+			{
+				packet.payload[1] = ACTIVE_NOISE_REDUCTION;
+				packet.payload[2] = 4;//Current Noise Control Level
+			}
+			else if(data[5] == AMBIENT_MODE)
+			{
+				packet.payload[1] = AMBIENT_MODE;
+				packet.payload[2] = 2;//Noise Control Min level
+			}
+			
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+			
+		case OPTYPE_CURRENT_NOISE_CONTROL_MODE_QUERY:
+			TRACE(1,"%s: OPTYPE_CURRENT_NOISE_CONTROL_MODE_QUERY\r\n",__func__);
+			packet.cmdID = CMDID_NOISE_CONTROL;
+			packet.payloadLen = 0x02;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_CURRENT_NOISE_CONTROL_MODE_QUERY;
+			if(anc_status == anc_on) packet.payload[1] = ACTIVE_NOISE_REDUCTION;
+			else if(anc_status == monitor) packet.payload[1] = AMBIENT_MODE;
+			else packet.payload[1] = OFF;
+			
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+
+		case OPTYPE_SET_ACTIVE_NOISE_CONTROL_MODE:
+			TRACE(1,"%s: OPTYPE_SET_ACTIVE_NOISE_CONTROL_MODE\r\n",__func__);
+			
+			break;
+			
+		default:
+			TRACE(2,"%s: undefined OPTYPE 0x%x!\r\n",__func__, OPTYPE);
+			break;
+	}
+}
+
 void Set_Get_Low_Latency_Mode(uint8_t *data, uint32_t size)
 {
 	uint8_t OPTYPE = (uint8_t)data[4];
@@ -355,6 +439,11 @@ bool APP_Functions_Call(uint8_t *data, uint32_t size)
 			Get_Bluetooth_Support_Feature(data, size);
 			return true;
 
+		case CMDID_NOISE_CONTROL:
+			TRACE(1,"%s: CMDID_NOISE_CONTROL\r\n",__func__);
+			Set_Get_Noise_Control(data, size);
+			return true;
+			
 		case CMDID_LOW_LATENCY_MODE:
 			TRACE(1,"%s: CMDID_LOW_LATENCY_MODE\r\n",__func__);
 			Set_Get_Low_Latency_Mode(data, size);
