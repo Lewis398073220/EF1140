@@ -330,7 +330,7 @@ void Set_Get_Noise_Control(uint8_t *data, uint32_t size)
 			else if(data[5] == AMBIENT_MODE)
 			{
 				packet.payload[1] = AMBIENT_MODE;
-				packet.payload[2] = 2;//Noise Control Min level
+				packet.payload[2] = 4;//Noise Control Min level
 			}
 			
 			APP_Send_Notify((uint8_t *)(&packet), packetLen);
@@ -354,7 +354,14 @@ void Set_Get_Noise_Control(uint8_t *data, uint32_t size)
 			if(data[5] == ACTIVE_NOISE_REDUCTION) BLE_noise_control_mode_set(ANC_ON, current_anc_on_mode_get(), true);
 			else if(data[5] == AMBIENT_MODE) BLE_noise_control_mode_set(AMBIENT_ON, current_anc_on_mode_get(), true);
 			else BLE_noise_control_mode_set(ANC_OFF, current_anc_on_mode_get(), true);
-			
+
+			packet.cmdID = CMDID_ACKNOWLEDGE_FROM_DEVICE;
+			packet.payloadLen = 0x02;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = CMDID_NOISE_CONTROL;
+			packet.payload[1] = GENERAL_SUCCESS;
+
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
 			break;
 			
 		default:

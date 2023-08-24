@@ -94,6 +94,7 @@ static uint8_t demo_mode_on = 0;
 static uint8_t demo_mode_powron = 0;
 static uint8_t app_color_change_flag = 0;
 static uint8_t app_color_value = 0x00;
+static enum ANC_STATUS anc_saved_status = ANC_OFF;
 static enum ANC_ON_MODE noise_reduction_mode = ANC_HIGH_MODE;
 #endif
 
@@ -1289,9 +1290,28 @@ void app_p_nvrecord_noise_reduction_mode_set(enum ANC_ON_MODE nr)
 #endif
 }
 
-enum ANC_ON_MODE app_noise_reduction_mode_get(void)
+enum ANC_ON_MODE app_p_nvrecord_noise_reduction_mode_get(void)
 {
 	return noise_reduction_mode;
+}
+
+void app_p_nvrecord_anc_status_set(enum ANC_STATUS status)
+{
+	anc_saved_status = status;
+
+	struct p_nvrecord_env_t *p_nvrecord_env;
+	p_nv_record_env_get(&p_nvrecord_env);
+	p_nvrecord_env->anc_status = status;
+	p_nv_record_env_set(p_nvrecord_env);
+
+#if FPGA==0
+	//nv_record_flash_flush();
+#endif
+}
+
+enum ANC_STATUS app_p_nvrecord_anc_status_get(void)
+{
+	return anc_saved_status;
 }
 
 uint8_t app_get_monitor_level(void)
@@ -2029,6 +2049,7 @@ void app_nvrecord_para_get(void)
 	p_nv_record_env_get(&p_nvrecord_env);
 	eq_custom_para_ancon=p_nvrecord_env->custom_eq_ancon;
 	eq_custom_para_ancoff=p_nvrecord_env->custom_eq_ancoff;
+	anc_saved_status = (enum ANC_STATUS)p_nvrecord_env->anc_status;
 	noise_reduction_mode = (enum ANC_ON_MODE)p_nvrecord_env->anc_on_mode;
 
 #if 0  
@@ -2065,12 +2086,15 @@ void app_nvrecord_para_get(void)
 #endif
 
 	TRACE(5,"sleep_time=%d, eq_set_index=%d, monitor_level=%d, focus_on=%d, multipoint=%d",sleep_time,eq_set_index,monitor_level,focus_on,multipoint);
-	TRACE(4,"auto_poweroff_time=%d, app_color_change_flag=%d, app_color_value=%d, noise_reduction_mode=%d", auto_poweroff_time,app_color_change_flag,app_color_value,noise_reduction_mode);
+	TRACE(4,"auto_poweroff_time=%d, app_color_change_flag=%d, app_color_value=%d, anc_saved_status=%d", auto_poweroff_time,app_color_change_flag,app_color_value,anc_saved_status);
+	TRACE(1,"noise_reduction_mode=%d", noise_reduction_mode);
+
 }
 
 void app_nvrecord_para_default(void)
 {
 	struct nvrecord_env_t *nvrecord_env;
+	struct p_nvrecord_env_t *p_nvrecord_env;
 	uint8_t i=0;
 	
 	nv_record_env_get(&nvrecord_env);
@@ -2079,7 +2103,6 @@ void app_nvrecord_para_default(void)
 	eq_set_index=0;
 	anc_set_index=NC_OFF;
 	monitor_level=20;
-	anc_on_mode_set(ANC_HIGH_MODE);
 	focus_on=0;
 	touch_lock=0;
 	sidetone=0;
@@ -2116,6 +2139,17 @@ void app_nvrecord_para_default(void)
 
 	nv_record_env_set(nvrecord_env);
 
+	p_nv_record_env_get(&p_nvrecord_env);
+
+	anc_saved_status = ANC_OFF;
+	noise_reduction_mode = ANC_HIGH_MODE;
+	anc_on_mode_set(ANC_HIGH_MODE);
+	
+	p_nvrecord_env->anc_status = anc_saved_status;
+	p_nvrecord_env->anc_on_mode = noise_reduction_mode;
+	
+	p_nv_record_env_set(p_nvrecord_env);
+	
 #if FPGA==0
     nv_record_flash_flush();
 #endif

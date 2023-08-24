@@ -114,6 +114,7 @@ void nvrecord_rebuild_system_env_user(struct p_nvrecord_env_t* pSystemEnv)
     memset((uint8_t *)pSystemEnv, 0, sizeof(struct nvrecord_env_t));
     
 	pSystemEnv->anc_on_mode = ANC_HIGH_MODE;
+	pSystemEnv->anc_status = ANC_OFF;
 
     p_localSystemInfo = *pSystemEnv;
 }

@@ -255,32 +255,9 @@ enum APP_ANC_MODE_STATUS app_get_anc_mode_status(void)
 
 void poweron_set_anc(void)
 {
-	enum APP_ANC_MODE_STATUS anc_mode_poweron;
-	anc_mode_poweron = app_nvrecord_anc_status_get();
-	
-	if(anc_mode_poweron == ANC_HIGH){
-		anc_current_status = ANC_ON;
-		anc_on_mode = ANC_HIGH_MODE;
-	}
-	else if(anc_mode_poweron == ANC_LOW){
-		anc_current_status = ANC_ON;
-		anc_on_mode = ANC_LOW_MODE;
-	}
-	else if(anc_mode_poweron == ANC_WIND){
-		anc_current_status = ANC_ON;
-		anc_on_mode = ANC_WIND_MODE;
-	}
-	else if(anc_mode_poweron == MONITOR_ON){
-		anc_current_status = AMBIENT_ON;
-		app_set_monitor_mode(app_get_monitor_level());
-	}
-	else {
-		anc_current_status = ANC_OFF;
-	}
-	
-	anc_on_mode_set(app_noise_reduction_mode_get());
+	anc_on_mode_set(app_p_nvrecord_noise_reduction_mode_get());
 	app_set_monitor_mode(app_get_monitor_level());
-	set_anc_status(anc_current_status, 0);	
+	set_anc_status(app_p_nvrecord_anc_status_get(), 0);	
 }
 
 enum ANC_TOGGLE_MODE app_get_anc_toggle_mode(void)
@@ -2127,7 +2104,7 @@ void app_anc_Key_Pro(APP_KEY_STATUS *status, void *param)
 		power_anc_init=0;
 	}
 
-	app_nvrecord_anc_set(app_get_anc_mode_status());
+	app_p_nvrecord_anc_status_set(anc_current_status);
 	//#if defined(__TPV_APP__)
 	Notification_Nosie_Cancelling_Change();
 	//#endif
@@ -2165,6 +2142,7 @@ void app_key_set_anc_mode(void)
 
 void BLE_noise_control_mode_set(enum ANC_STATUS anc_new_status, enum ANC_ON_MODE nr, uint8_t prom_on)
 {
+	app_p_nvrecord_anc_status_set(anc_new_status);
 	app_p_nvrecord_noise_reduction_mode_set(nr);
 	anc_on_mode_set(nr);
 	set_anc_status(anc_new_status, prom_on);
