@@ -37,7 +37,9 @@
 
 /** add by pang **/
 #include "app_user.h"
-#include "philips_ble_api.h"
+#if defined(__CREATIVE_APP__)
+#include "creative_ble_api.h"
+#endif
 #include "hal_bootmode.h"
 #include "analog.h"//add by cai
 #include "hal_usb.h"//add by cai
@@ -390,9 +392,6 @@ int app_battery_handle_process_normal(uint32_t status,  union APP_BATTERY_MSG_PR
 			if(level_count > 3){
 				level_count = 0;
 				app_battery_measure.currlevel = level+1;
-				//#if defined(__HAYLOU_APP__)
-				Notification_Battery_Level_Change();//notify app while battery level change
-				//#endif
 			}
 			app_status_battery_report(app_battery_measure.currlevel-1);//m by cai	
 			#endif
@@ -528,9 +527,6 @@ int app_battery_handle_process_charging(uint32_t status,  union APP_BATTERY_MSG_
 			if(level_count>3){
 				level_count=0;
 				app_battery_measure.currlevel = level+1;
-				//#if defined(__HAYLOU_APP__)
-				Notification_Battery_Level_Change();//notify app while battery level change
-				//#endif
 			}
 			app_status_battery_report(app_battery_measure.currlevel-1);
 #endif

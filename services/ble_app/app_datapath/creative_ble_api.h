@@ -138,6 +138,7 @@ void APP_protocol_port(uint8_t port);
 void APP_Send_Notify(uint8_t *data, uint32_t size);
 bool APP_Api_Entry(uint8_t *data, uint32_t size);
 bool APP_Functions_Call(uint8_t *data, uint32_t size);
+void Noise_Control_Change_Notify(void);
 
 #ifdef __cplusplus
 }

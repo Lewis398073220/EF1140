@@ -370,6 +370,22 @@ void Set_Get_Noise_Control(uint8_t *data, uint32_t size)
 	}
 }
 
+void Noise_Control_Change_Notify(void)
+{
+	enum ANC_STATUS anc_status = app_get_anc_status();
+
+	TRACE(1,"%s: OPTYPE_CURRENT_NOISE_CONTROL_MODE_QUERY\r\n",__func__);
+	packet.cmdID = CMDID_NOISE_CONTROL;
+	packet.payloadLen = 0x02;
+	packetLen = packet.payloadLen + 4;
+	packet.payload[0] = OPTYPE_CURRENT_NOISE_CONTROL_MODE_QUERY;
+	if(anc_status == ANC_ON) packet.payload[1] = ACTIVE_NOISE_REDUCTION;
+	else if(anc_status == AMBIENT_ON) packet.payload[1] = AMBIENT_MODE;
+	else packet.payload[1] = OFF;
+	
+	APP_Send_Notify((uint8_t *)(&packet), packetLen);
+}
+
 void Set_Get_Low_Latency_Mode(uint8_t *data, uint32_t size)
 {
 	uint8_t OPTYPE = (uint8_t)data[4];
