@@ -373,8 +373,12 @@ void Set_Get_Noise_Control(uint8_t *data, uint32_t size)
 void Noise_Control_Change_Notify(void)
 {
 	enum ANC_STATUS anc_status = app_get_anc_status();
+	struct PACKET_STRUCTURE packet;
+	uint16_t packetLen = 0;
 
 	TRACE(1,"%s: OPTYPE_CURRENT_NOISE_CONTROL_MODE_QUERY\r\n",__func__);
+
+	packet.startID = START_ID;
 	packet.cmdID = CMDID_NOISE_CONTROL;
 	packet.payloadLen = 0x02;
 	packetLen = packet.payloadLen + 4;
