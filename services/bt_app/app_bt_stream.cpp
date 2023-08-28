@@ -1578,6 +1578,13 @@ void change_eq_from_ble_api(uint8_t index)
 }
 /** end add **/
 
+void BLE_bt_audio_updata_eq(void)
+{
+#ifdef __SW_IIR_EQ_PROCESS__
+	bt_audio_set_eq(AUDIO_EQ_TYPE_SW_IIR,bt_audio_get_eq_index(AUDIO_EQ_TYPE_SW_IIR,app_get_anc_status()));
+#endif  
+}
+
 uint8_t bt_audio_get_eq_index(AUDIO_EQ_TYPE_T audio_eq_type,uint8_t anc_status)
 {
     uint8_t index_eq=0;
@@ -1699,11 +1706,11 @@ uint32_t bt_audio_set_eq(AUDIO_EQ_TYPE_T audio_eq_type, uint8_t index)
 			}
 			else if(eq_index == 0x3f){//m by cai to 0x3f
 				if(index == ANC_ON) {
-					if(anc_on_mode == ANC_LOW_MODE) iir_cfg= &eq_custom_para_anc_off;
-					else iir_cfg= &eq_custom_para;
+					if(anc_on_mode == ANC_LOW_MODE) iir_cfg= &eq_custom_para_ancoff;
+					else iir_cfg= &eq_custom_para_ancon;
 				}	
 				else 
-					iir_cfg= &eq_custom_para_anc_off;
+					iir_cfg= &eq_custom_para_ancoff;
 			}
 			else
 				return 1;	

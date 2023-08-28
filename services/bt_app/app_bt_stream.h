@@ -244,6 +244,8 @@ uint8_t BLE_set_gaming_mode(uint8_t game_on, uint8_t prom_on);
 
 uint8_t get_app_gaming_mode(void);
 void change_eq_from_ble_api(uint8_t index);
+void BLE_bt_audio_updata_eq(void);
+
 
 
 #ifdef __cplusplus

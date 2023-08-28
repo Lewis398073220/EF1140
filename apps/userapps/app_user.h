@@ -142,6 +142,8 @@ void app_focus_set_no_save(uint8_t focus);
 void app_nvrecord_focus_set(uint8_t focus);
 uint8_t app_eq_index_get(void);
 void app_eq_index_set_nosave(uint8_t eq_index);
+void app_local_eq_index_set(uint8_t eq_index);
+void app_local_custom_eq_para_set(float custom_eq_gain[10]);
 void app_nvrecord_eq_set(uint8_t eq_index);
 //void app_eq_para_get(uint8_t *p);
 void app_eq_custom_para_get(uint8_t customization_eq_value[6]);

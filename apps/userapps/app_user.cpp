@@ -1148,39 +1148,58 @@ void apps_api_event_process(void)
 
 #if defined(__EVRCORD_USER_DEFINE__)
 IIR_CFG_T eq_custom_para_ancon={
-    .gain0 = -6,
-    .gain1 = -6,
-    .num = 10,
+    .gain0 = -18,
+    .gain1 = -18,
+    .num = 19,
     .param = {
-        {IIR_TYPE_PEAK,  0,    31, 1.0},
-        {IIR_TYPE_PEAK,  0,    63, 1.0},
-        {IIR_TYPE_PEAK,  0,   125, 1.0},
-        {IIR_TYPE_PEAK,  0,   250, 1.0},
-        {IIR_TYPE_PEAK,  0,   500, 1.0},
-        {IIR_TYPE_PEAK,  0,  1000, 1.0},
-		{IIR_TYPE_PEAK,  0,  2000, 1.0},
-		{IIR_TYPE_PEAK,  0,  4000, 1.0},
-		{IIR_TYPE_PEAK,  0,  8000, 1.0},
-		{IIR_TYPE_PEAK,  0, 16000, 1.0},
-		{IIR_TYPE_PEAK,  0, 28000, 1.0},
+        {IIR_TYPE_PEAK,  0,    31, 0.5},
+        {IIR_TYPE_PEAK,  0,    62, 0.5},
+        {IIR_TYPE_PEAK,  0,   125, 0.5},
+        {IIR_TYPE_PEAK,  0,   250, 0.5},
+        {IIR_TYPE_PEAK,  0,   500, 0.5},
+        {IIR_TYPE_PEAK,  0,  1000, 0.5},
+        {IIR_TYPE_PEAK,  0,  2000, 0.5},
+        {IIR_TYPE_PEAK,  0,  4000, 0.5},
+        {IIR_TYPE_PEAK,  0,  8000, 0.5},
+        {IIR_TYPE_PEAK,  0, 16000, 0.5},
+
+        {IIR_TYPE_HIGH_PASS, 0, 20, 0.8},
+		{IIR_TYPE_LOW_SHELF, 3,160, 0.7},
+		{IIR_TYPE_PEAK, -7,   330, 0.6},
+		{IIR_TYPE_PEAK, -4,   650, 0.6},
+		{IIR_TYPE_PEAK, -5,  1000, 0.9},
+		{IIR_TYPE_PEAK, -6,  4500, 3.0},
+		{IIR_TYPE_PEAK, -9,  6700, 1.3},
+		{IIR_TYPE_PEAK, -6, 15000, 0.8},
+		{IIR_TYPE_PEAK,  3,  2800, 3.0},
 	}
 };
 
 IIR_CFG_T eq_custom_para_ancoff={
-    .gain0 = -8,
-    .gain1 = -8,
-    .num = 9,
+    .gain0 = -18,
+    .gain1 = -18,
+    .num = 19,
     .param = {
-        {IIR_TYPE_PEAK, .0,   100, 0.8},
-        {IIR_TYPE_PEAK, .0,   400, 1.0},
-        {IIR_TYPE_PEAK, .0,  1000, 0.8},
-        {IIR_TYPE_PEAK, .0,  2500, 1.0},
-        {IIR_TYPE_PEAK, .0,  6300, 0.8},
-		{IIR_TYPE_PEAK, .0, 12000, 1.0},
-		//{IIR_TYPE_PEAK,-11,    30, 0.5},
-		{IIR_TYPE_PEAK,-9,   140, 1.2},
-		{IIR_TYPE_PEAK, -2,   200, 1.8},
-		{IIR_TYPE_PEAK, -7,  8000, 1.8},
+        {IIR_TYPE_PEAK,    0,    31, 0.5},
+        {IIR_TYPE_PEAK,    0,    62, 0.5},
+        {IIR_TYPE_PEAK,    0,   125, 0.5},
+        {IIR_TYPE_PEAK,    0,   250, 0.5},
+        {IIR_TYPE_PEAK,    0,   500, 0.5},
+        {IIR_TYPE_PEAK,    0,  1000, 0.5},
+        {IIR_TYPE_PEAK,    0,  2000, 0.5},
+        {IIR_TYPE_PEAK,    0,  4000, 0.5},
+        {IIR_TYPE_PEAK,    0,  8000, 0.5},
+        {IIR_TYPE_PEAK,    0, 16000, 0.5},
+
+		{IIR_TYPE_HIGH_PASS, 0,  20, 0.8},
+		{IIR_TYPE_PEAK, -4.5,   200, 0.7},
+		{IIR_TYPE_PEAK,	  -8,   590, 0.9},
+		{IIR_TYPE_PEAK,   -4,  1000, 0.9},
+		{IIR_TYPE_PEAK,    1,  2000, 0.8},
+		{IIR_TYPE_PEAK,   -5,  4500, 3.0},
+		{IIR_TYPE_PEAK,  -10,  6700, 1.3},
+		{IIR_TYPE_PEAK,   -6, 15000, 0.8},
+		{IIR_TYPE_PEAK,    3,  2800, 3.0},
 	}
 };
 
@@ -1364,6 +1383,22 @@ uint8_t app_eq_index_get(void)
 void app_eq_index_set_nosave(uint8_t eq_index)
 {   
 	eq_set_index = eq_index;
+}
+
+void app_local_eq_index_set(uint8_t eq_index)
+{
+	eq_set_index = eq_index;
+}
+
+void app_local_custom_eq_para_set(float custom_eq_gain[10])
+{
+	uint8_t i = 0;
+
+	for(i = 0; i < 10; i++)
+	{
+		eq_custom_para_ancoff.param[i].gain = custom_eq_gain[i];
+		eq_custom_para_ancon.param[i].gain = custom_eq_gain[i];
+	}
 }
 
 void app_nvrecord_eq_set(uint8_t eq_index)
@@ -2047,8 +2082,8 @@ void app_nvrecord_para_get(void)
 	}
 	
 	p_nv_record_env_get(&p_nvrecord_env);
-	eq_custom_para_ancon=p_nvrecord_env->custom_eq_ancon;
-	eq_custom_para_ancoff=p_nvrecord_env->custom_eq_ancoff;
+	//eq_custom_para_ancon=p_nvrecord_env->custom_eq_ancon;
+	//eq_custom_para_ancoff=p_nvrecord_env->custom_eq_ancoff;
 	anc_saved_status = (enum ANC_STATUS)p_nvrecord_env->anc_status;
 	noise_reduction_mode = (enum ANC_ON_MODE)p_nvrecord_env->anc_on_mode;
 
