@@ -354,7 +354,6 @@ void Set_Get_Graphic_Equalizer(uint8_t *data, uint32_t size)
 				app_nvrecord_eq_index_set(0x3F);
 				BLE_bt_audio_updata_eq();
 			}
-
 			
 			packet.cmdID = CMDID_ACKNOWLEDGE_FROM_DEVICE;
 			packet.payloadLen = 0x03;
@@ -452,12 +451,24 @@ void Set_Get_Noise_Control(uint8_t *data, uint32_t size)
 			else BLE_noise_control_mode_set(ANC_OFF, current_anc_on_mode_get(), true);
 
 			packet.cmdID = CMDID_ACKNOWLEDGE_FROM_DEVICE;
-			packet.payloadLen = 0x02;
+			packet.payloadLen = 0x03;
 			packetLen = packet.payloadLen + 4;
 			packet.payload[0] = CMDID_NOISE_CONTROL;
 			packet.payload[1] = GENERAL_SUCCESS;
+			packet.payload[2] = OPTYPE_SET_ACTIVE_NOISE_CONTROL_MODE;
 
 			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+
+		case OPTYPE_SUPPORTED_NOISE_CONTROL_LEVEL_QUERY:
+			TRACE(1,"%s: OPTYPE_SUPPORTED_NOISE_CONTROL_LEVEL_QUERY\r\n",__func__); 
+			packet.cmdID = CMDID_NOISE_CONTROL;
+			packet.payloadLen = 0x04;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_SUPPORTED_NOISE_CONTROL_LEVEL_QUERY;
+			packet.payload[1] = data[5];
+			*((uint16_t *)(packet.payload + 2)) = 0x00;//Not supported
+			
 			break;
 			
 		default:
