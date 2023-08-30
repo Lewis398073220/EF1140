@@ -2252,7 +2252,9 @@ void app_nvrecord_para_default(void)
 	anc_saved_status = ANC_OFF;
 	noise_reduction_mode = ANC_HIGH_MODE;
 	anc_on_mode_set(ANC_HIGH_MODE);
-	
+
+	p_nvrecord_env->custom_eq_ancon = eq_custom_para_ancon;
+	p_nvrecord_env->custom_eq_ancoff = eq_custom_para_ancoff;
 	p_nvrecord_env->anc_status = anc_saved_status;
 	p_nvrecord_env->anc_on_mode = noise_reduction_mode;
 	
