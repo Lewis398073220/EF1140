@@ -276,27 +276,11 @@ void Get_Bluetooth_Support_Feature(uint8_t *data, uint32_t size)
 	APP_Send_Notify((uint8_t *)(&packet), packetLen);
 }
 
-void PrintFloat(float value)
-{
-	int tmp,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6;
-	int8_t mark = 1;
-
-	if(value < 0) mark = -1;
-	tmp = (int)value;
-	tmp1=(int)((value-tmp)*10*mark)%10;
-	tmp2=(int)((value-tmp)*100*mark)%10;
-	tmp3=(int)((value-tmp)*1000*mark)%10;
-	tmp4=(int)((value-tmp)*10000*mark)%10;
-	tmp5=(int)((value-tmp)*100000*mark)%10;
-	tmp6=(int)((value-tmp)*1000000*mark)%10;
-	TRACE(0,"f-value=%d.%d%d%d%d%d%d\r\n", tmp,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6);
-}
-
 void Set_Get_Graphic_Equalizer(uint8_t *data, uint32_t size)
 {
-	uint8_t OPTYPE = (uint8_t)data[4], i = 0, flag = 0;
-	float eq_gain[10] = {0};
-	uint8_t little_endian[4];
+	uint8_t OPTYPE = (uint8_t)data[4], i = 0, j = 0;
+	float eq_gain[CUSEQ_BANDS_NUM] = {0};
+	uint8_t little_endian[4] = {0};//must clear
 
 	switch(OPTYPE)
 	{
@@ -306,14 +290,37 @@ void Set_Get_Graphic_Equalizer(uint8_t *data, uint32_t size)
 			packet.payloadLen = 0x02;
 			packetLen = packet.payloadLen + 4;
 			packet.payload[0] = OPTYPE_GRAPHIC_EQUALIZER_QUERY;
-			packet.payload[1] = 0;//Current EQ State
+			packet.payload[1] = app_eq_index_get()==0x3F? 1 : 0;//Current EQ State
 
 			APP_Send_Notify((uint8_t *)(&packet), packetLen);
 			break;
 
+		case OPTYPE_ALL_BANDS_LEVEL_QUERY:
+			TRACE(1,"%s: OPTYPE_ALL_BANDS_LEVEL_QUERY\r\n",__func__);
+			packet.cmdID = CMDID_GRAPHIC_EQUALIZER;
+			packet.payloadLen = CUSEQ_BANDS_NUM * 5 + 2;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_ALL_BANDS_LEVEL_QUERY;
+			packet.payload[1] = CUSEQ_BANDS_NUM;//Total number of bands
+			app_custom_eq_para_get(eq_gain);
+			for(i = 2, j = 0; i < packet.payloadLen; i += 5, j++)
+			{
+				packet.payload[i] = j;
+
+				*((float *)little_endian) = eq_gain[j];
+				packet.payload[i + 1] = little_endian[0];
+				packet.payload[i + 2] = little_endian[1];
+				packet.payload[i + 3] = little_endian[2];
+				packet.payload[i + 4] = little_endian[3];
+				PrintFloat(eq_gain[j]);
+			}
+			
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+			
 		case OPTYPE_SET_ALL_GRAPHIC_EQUALIZER_BAND_LEVEL:
 			TRACE(1,"%s: OPTYPE_SET_ALL_GRAPHIC_EQUALIZER_BAND_LEVEL\r\n",__func__);
-			if(data[5] == 10){
+			if(data[5] == CUSEQ_BANDS_NUM){
 				for(i = 0; i < 10; i++)
 				{
 					little_endian[3] = *(data + 7 + i*5);
@@ -322,15 +329,10 @@ void Set_Get_Graphic_Equalizer(uint8_t *data, uint32_t size)
 					little_endian[0] = *(data + 10 + i*5);
 					eq_gain[i] = *((float *)little_endian);
 					PrintFloat(eq_gain[i]);
-					if(eq_gain[i] != 0) flag = 1;
 				}
 
-				if(flag == 1) {
-					app_local_custom_eq_para_set(eq_gain);
-					app_local_eq_index_set(0x3f);
-				} else{
-					app_local_eq_index_set(0x00);
-				}
+				app_p_nvrecord_custom_eq_para_set(eq_gain);
+				app_nvrecord_eq_index_set(0x3F);
 				BLE_bt_audio_updata_eq();
 			}
 
@@ -340,6 +342,27 @@ void Set_Get_Graphic_Equalizer(uint8_t *data, uint32_t size)
 			packet.payload[0] = CMDID_GRAPHIC_EQUALIZER;
 			packet.payload[1] = GENERAL_SUCCESS;
 
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+
+		case OPTYPE_SET_GRAPHIC_EQUALIZER:
+			TRACE(1,"%s: OPTYPE_SET_GRAPHIC_EQUALIZER\r\n",__func__);
+			if(data[5] == 0) {
+				app_nvrecord_eq_index_set(0x00);
+				BLE_bt_audio_updata_eq();
+			} else{
+				app_nvrecord_eq_index_set(0x3F);
+				BLE_bt_audio_updata_eq();
+			}
+
+			
+			packet.cmdID = CMDID_ACKNOWLEDGE_FROM_DEVICE;
+			packet.payloadLen = 0x03;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = CMDID_GRAPHIC_EQUALIZER;
+			packet.payload[1] = GENERAL_SUCCESS;
+			packet.payload[2] = OPTYPE_SET_GRAPHIC_EQUALIZER;
+			
 			APP_Send_Notify((uint8_t *)(&packet), packetLen);
 			break;
 			
@@ -376,7 +399,7 @@ void Set_Get_Noise_Control(uint8_t *data, uint32_t size)
 			if(data[5] == ACTIVE_NOISE_REDUCTION)
 			{
 				packet.payload[1] = ACTIVE_NOISE_REDUCTION;
-				packet.payload[2] = 4;//Noise Control Min level
+				packet.payload[2] = 0;//Noise Control Min level
 				packet.payload[3] = 4;//Noise Control Max level
 			}
 			else if(data[5] == AMBIENT_MODE)
@@ -388,7 +411,7 @@ void Set_Get_Noise_Control(uint8_t *data, uint32_t size)
 			
 			APP_Send_Notify((uint8_t *)(&packet), packetLen);
 			break;
-
+			
 		case OPTYPE_NOISE_CONTROL_MODE_LEVEL_QUERY:
 			TRACE(1,"%s: OPTYPE_NOISE_CONTROL_MODE_LEVEL_QUERY\r\n",__func__);
 			packet.cmdID = CMDID_NOISE_CONTROL;

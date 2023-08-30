@@ -58,6 +58,8 @@
 #define AUTO_PWOFF_TIME_6HOUR  2586
 #define AUTO_PWOFF_TIME_PERM   4095
 #define DEFAULT_AUTO_PWOFF_TIME AUTO_PWOFF_TIME_PERM
+
+#define CUSEQ_BANDS_NUM     10
 extern IIR_CFG_T eq_custom_para_ancon;
 extern IIR_CFG_T eq_custom_para_ancoff;
 extern IIR_CFG_T eq_custom_para;
@@ -79,6 +81,7 @@ extern "C" {
 int app_user_event_open_module(void);
 int app_user_event_open_module_for_charge(void);
 void app_user_event_close_module(void);
+void PrintFloat(float value);
 
 #if defined(__USE_3_5JACK_CTR__)
 bool apps_3p5_jack_get_val(void);
@@ -143,6 +146,9 @@ void app_nvrecord_focus_set(uint8_t focus);
 uint8_t app_eq_index_get(void);
 void app_eq_index_set_nosave(uint8_t eq_index);
 void app_local_eq_index_set(uint8_t eq_index);
+void app_nvrecord_eq_index_set(uint8_t eq_index);
+void app_custom_eq_para_get(float cusEQ_gain[CUSEQ_BANDS_NUM]);
+void app_p_nvrecord_custom_eq_para_set(float custom_eq_gain[10]);
 void app_local_custom_eq_para_set(float custom_eq_gain[10]);
 void app_nvrecord_eq_set(uint8_t eq_index);
 //void app_eq_para_get(uint8_t *p);

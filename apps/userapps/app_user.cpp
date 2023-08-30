@@ -40,10 +40,6 @@
 #include "ac107.h"
 #endif
 
-#if defined(__HAYLOU_APP__)
-#include "../../services/ble_app/app_datapath/haylou_ble_hop.h"
-#endif
-
 #ifdef BT_USB_AUDIO_DUAL_MODE
 extern "C" int hal_usb_configured(void);
 #endif
@@ -72,6 +68,22 @@ enum
 	USER_EVENT_API=7,
     USER_EVENT_NONE
 };
+
+void PrintFloat(float value)
+{
+	int tmp,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6;
+	int8_t mark = 1;
+
+	if(value < 0) mark = -1;
+	tmp = (int)value;
+	tmp1=(int)((value-tmp)*10*mark)%10;
+	tmp2=(int)((value-tmp)*100*mark)%10;
+	tmp3=(int)((value-tmp)*1000*mark)%10;
+	tmp4=(int)((value-tmp)*10000*mark)%10;
+	tmp5=(int)((value-tmp)*100000*mark)%10;
+	tmp6=(int)((value-tmp)*1000000*mark)%10;
+	TRACE(0,"f-value=%d.%d%d%d%d%d%d\r\n", tmp,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6);
+}
 
 #if defined(__EVRCORD_USER_DEFINE__)
 static uint8_t sleep_time = DEFAULT_SLEEP_TIME;
@@ -1150,7 +1162,7 @@ void apps_api_event_process(void)
 IIR_CFG_T eq_custom_para_ancon={
     .gain0 = -18,
     .gain1 = -18,
-    .num = 19,
+    .num = CUSEQ_BANDS_NUM,
     .param = {
         {IIR_TYPE_PEAK,  0,    31, 0.5},
         {IIR_TYPE_PEAK,  0,    62, 0.5},
@@ -1163,7 +1175,7 @@ IIR_CFG_T eq_custom_para_ancon={
         {IIR_TYPE_PEAK,  0,  8000, 0.5},
         {IIR_TYPE_PEAK,  0, 16000, 0.5},
 
-        {IIR_TYPE_HIGH_PASS, 0, 20, 0.8},
+        /*{IIR_TYPE_HIGH_PASS, 0, 20, 0.8},
 		{IIR_TYPE_LOW_SHELF, 3,160, 0.7},
 		{IIR_TYPE_PEAK, -7,   330, 0.6},
 		{IIR_TYPE_PEAK, -4,   650, 0.6},
@@ -1171,14 +1183,14 @@ IIR_CFG_T eq_custom_para_ancon={
 		{IIR_TYPE_PEAK, -6,  4500, 3.0},
 		{IIR_TYPE_PEAK, -9,  6700, 1.3},
 		{IIR_TYPE_PEAK, -6, 15000, 0.8},
-		{IIR_TYPE_PEAK,  3,  2800, 3.0},
+		{IIR_TYPE_PEAK,  3,  2800, 3.0},*/
 	}
 };
 
 IIR_CFG_T eq_custom_para_ancoff={
     .gain0 = -18,
     .gain1 = -18,
-    .num = 19,
+    .num = CUSEQ_BANDS_NUM,
     .param = {
         {IIR_TYPE_PEAK,    0,    31, 0.5},
         {IIR_TYPE_PEAK,    0,    62, 0.5},
@@ -1191,7 +1203,7 @@ IIR_CFG_T eq_custom_para_ancoff={
         {IIR_TYPE_PEAK,    0,  8000, 0.5},
         {IIR_TYPE_PEAK,    0, 16000, 0.5},
 
-		{IIR_TYPE_HIGH_PASS, 0,  20, 0.8},
+		/*{IIR_TYPE_HIGH_PASS, 0,  20, 0.8},
 		{IIR_TYPE_PEAK, -4.5,   200, 0.7},
 		{IIR_TYPE_PEAK,	  -8,   590, 0.9},
 		{IIR_TYPE_PEAK,   -4,  1000, 0.9},
@@ -1199,7 +1211,7 @@ IIR_CFG_T eq_custom_para_ancoff={
 		{IIR_TYPE_PEAK,   -5,  4500, 3.0},
 		{IIR_TYPE_PEAK,  -10,  6700, 1.3},
 		{IIR_TYPE_PEAK,   -6, 15000, 0.8},
-		{IIR_TYPE_PEAK,    3,  2800, 3.0},
+		{IIR_TYPE_PEAK,    3,  2800, 3.0},*/
 	}
 };
 
@@ -1375,14 +1387,15 @@ void app_nvrecord_focus_set(uint8_t focus)
     //nv_record_flash_flush();
 #endif
 }
-uint8_t app_eq_index_get(void)
-{   
-	return (eq_set_index);
-}
 
 void app_eq_index_set_nosave(uint8_t eq_index)
 {   
 	eq_set_index = eq_index;
+}
+
+uint8_t app_eq_index_get(void)
+{   
+	return (eq_set_index);
 }
 
 void app_local_eq_index_set(uint8_t eq_index)
@@ -1390,11 +1403,60 @@ void app_local_eq_index_set(uint8_t eq_index)
 	eq_set_index = eq_index;
 }
 
+void app_nvrecord_eq_index_set(uint8_t eq_index)
+{
+    eq_set_index=eq_index;
+		
+	struct nvrecord_env_t *nvrecord_env;
+			
+	nv_record_env_get(&nvrecord_env);
+	nvrecord_env->eq_mode=eq_set_index;
+	nv_record_env_set(nvrecord_env);
+
+#if FPGA==0
+    //nv_record_flash_flush();
+#endif
+}
+
+void app_custom_eq_para_get(float cusEQ_gain[CUSEQ_BANDS_NUM])
+{
+	uint8_t i = 0;
+
+	//TRACE(0,"enter %s",__func__);
+	for(i = 0; i < CUSEQ_BANDS_NUM; i++)
+	{
+		cusEQ_gain[i] = eq_custom_para_ancon.param[i].gain;
+		//PrintFloat(cusEQ_gain[i]);
+	}
+	//TRACE(0,"exit %s",__func__);
+}
+
+void app_p_nvrecord_custom_eq_para_set(float custom_eq_gain[10])
+{
+	struct p_nvrecord_env_t *p_nvrecord_env;
+	uint8_t i = 0;
+
+	for(i = 0; i < CUSEQ_BANDS_NUM; i++)
+	{
+		eq_custom_para_ancoff.param[i].gain = custom_eq_gain[i];
+		eq_custom_para_ancon.param[i].gain = custom_eq_gain[i];
+	}
+
+	p_nv_record_env_get(&p_nvrecord_env);
+	p_nvrecord_env->custom_eq_ancon = eq_custom_para_ancon;
+	p_nvrecord_env->custom_eq_ancoff = eq_custom_para_ancoff;
+	p_nv_record_env_set(p_nvrecord_env);
+
+#if FPGA==0
+	//nv_record_flash_flush();
+#endif
+}
+
 void app_local_custom_eq_para_set(float custom_eq_gain[10])
 {
 	uint8_t i = 0;
 
-	for(i = 0; i < 10; i++)
+	for(i = 0; i < CUSEQ_BANDS_NUM; i++)
 	{
 		eq_custom_para_ancoff.param[i].gain = custom_eq_gain[i];
 		eq_custom_para_ancon.param[i].gain = custom_eq_gain[i];
@@ -2019,6 +2081,18 @@ void app_nvrecord_multipoint_set(uint8_t on)
 }
 */
 
+void read_cusEQ_table(IIR_CFG_T p_cusEQ, uint8_t bands_num)
+{
+	uint8_t i=0;
+
+	for(i = 0; i < bands_num; i++)
+	{
+		eq_custom_para_ancon.param[i].gain = p_cusEQ.param[i].gain;
+		eq_custom_para_ancoff.param[i].gain = p_cusEQ.param[i].gain;
+		PrintFloat(eq_custom_para_ancon.param[i].gain);
+	}
+}
+
 void app_nvrecord_para_get(void)
 {
 	struct nvrecord_env_t *nvrecord_env;
@@ -2082,8 +2156,7 @@ void app_nvrecord_para_get(void)
 	}
 	
 	p_nv_record_env_get(&p_nvrecord_env);
-	//eq_custom_para_ancon=p_nvrecord_env->custom_eq_ancon;
-	//eq_custom_para_ancoff=p_nvrecord_env->custom_eq_ancoff;
+	read_cusEQ_table(p_nvrecord_env->custom_eq_ancon, CUSEQ_BANDS_NUM);
 	anc_saved_status = (enum ANC_STATUS)p_nvrecord_env->anc_status;
 	noise_reduction_mode = (enum ANC_ON_MODE)p_nvrecord_env->anc_on_mode;
 
