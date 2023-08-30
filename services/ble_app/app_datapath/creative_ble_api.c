@@ -141,7 +141,7 @@ void Get_Device_Information(uint8_t *data, uint32_t size)
 			packet.payload[1] = data[5];//Firmware Index
 			*((uint32_t *)(packet.payload + 2)) = FW_Version;
 			packet.payload[6] = RESERVED;
-			packet.payload[7] = RESERVED;
+			packet.payload[7] = CLPL_FIRMWARE_VERSION_FORMAT_R1_1;//Firmware Version Format Type ID
 
 			TRACE(8,"FW_Version: %d.%d.%d%02d%02d.%02d%d%d",MAJOR,MINOR,16+YR,MONTH,DAY,HR,QUARTER,PATCH);
 			APP_Send_Notify((uint8_t *)(&packet), packetLen);
