@@ -1226,7 +1226,7 @@ static void anc_sample_rate_change(enum AUD_STREAM_T stream, enum AUD_SAMPRATE_T
     enum AUD_SAMPRATE_T play_rate, cap_rate;
 
     if (anc_sample_rate[stream] != rate) {
-#if 0
+#if 1
 #ifdef CHIP_BEST1000
         if (stream == AUD_STREAM_PLAYBACK) {
             play_rate = rate;
