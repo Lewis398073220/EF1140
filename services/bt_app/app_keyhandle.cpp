@@ -72,8 +72,8 @@ extern struct BT_DEVICE_T  app_bt_device;
 #include "app_user.h"
 #endif
 #include "hwtimer_list.h"
-#if defined(__HAYLOU_APP__)
-#include "../../ble_app/app_datapath/haylou_ble_hop.h"
+#if defined(__CREATIVE_APP__)
+#include "../../ble_app/app_datapath/creative_ble_api.h"
 #endif
 
 #include "app_media_player.h"
@@ -1237,8 +1237,8 @@ static void bt_key_handle_game_key(void)
 			hal_codec_dac_mute(0);
 			app_voice_report(APP_STATUS_INDICATION_GAMING_ON, 0);
 		}
-		#if defined(__HAYLOU_APP__)
-		Set_Report_Game_Status();
+		#if defined(__CREATIVE_APP__)
+		Low_Latency_Mode_Change_Notify();
 		#endif
 	}
 #endif

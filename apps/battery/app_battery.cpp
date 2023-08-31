@@ -392,6 +392,7 @@ int app_battery_handle_process_normal(uint32_t status,  union APP_BATTERY_MSG_PR
 			if(level_count > 3){
 				level_count = 0;
 				app_battery_measure.currlevel = level+1;
+				Battery_Level_Change_Notify();
 			}
 			app_status_battery_report(app_battery_measure.currlevel-1);//m by cai	
 			#endif

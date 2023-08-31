@@ -241,6 +241,23 @@ void Get_Battery_Level(uint8_t *data, uint32_t size)
 	}
 }
 
+void Battery_Level_Change_Notify(void)
+{
+	struct PACKET_STRUCTURE packet;
+	uint16_t packetLen = 0;
+
+	TRACE(1,"%s: OPTYPE_BATTERY_LEVEL_QUERY\r\n",__func__);
+	packet.cmdID = CMDID_BATTERY_LEVEL;
+	packet.payloadLen = 0x07;
+	packetLen = packet.payloadLen + 4;
+	packet.payload[0] = OPTYPE_BATTERY_LEVEL_QUERY;
+	packet.payload[1] = 1;//Total number of devices queried
+	*((uint32_t *)(packet.payload + 2)) = GENERIC_DEVICE_DEFAULT;
+	packet.payload[6] = 10 * app_battery_current_level();
+
+	APP_Send_Notify((uint8_t *)(&packet), packetLen);
+}
+
 void Get_Battery_Status(uint8_t *data, uint32_t size)
 {
 	uint8_t OPTYPE = (uint8_t)data[4];
@@ -545,6 +562,53 @@ void Set_Get_Low_Latency_Mode(uint8_t *data, uint32_t size)
 	}
 }
 
+void Low_Latency_Mode_Change_Notify(void)
+{
+	struct PACKET_STRUCTURE packet;
+	uint16_t packetLen = 0;
+
+	TRACE(1,"%s: OPTYPE_LOW_LATENCY_MODE_QUERY\r\n",__func__);
+	packet.cmdID = CMDID_LOW_LATENCY_MODE;
+	packet.payloadLen = 0x02;
+	packetLen = packet.payloadLen + 4;
+	packet.payload[0] = OPTYPE_LOW_LATENCY_MODE_QUERY;
+	packet.payload[1] = get_app_gaming_mode()? 1 : 0;
+	
+	APP_Send_Notify((uint8_t *)(&packet), packetLen);
+}
+
+void Set_Get_Firmware_Upgrade(uint8_t *data, uint32_t size)
+{
+	uint8_t OPTYPE = (uint8_t)data[4];
+	enum ACKNOWLEDGEMENT_STATUS_TABLE OPRESULT = GENERAL_SUCCESS;
+
+	switch(OPTYPE)
+	{
+		case OPTYPE_SET_OPERATION:
+			TRACE(1,"%s: OPTYPE_SET_OPERATION\r\n",__func__);
+			packet.cmdID = CMDID_ACKNOWLEDGE_FROM_DEVICE;
+			packet.payloadLen = 0x0A;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = CMDID_OTA_FIRMWARE_UPGRADE;
+			packet.payload[1] = OPRESULT;
+			packet.payload[2] = OPTYPE_SET_OPERATION;
+			packet.payload[3] = data[5];
+			packet.payload[4] = RESERVED;
+			packet.payload[5] = RESERVED;
+			packet.payload[6] = RESERVED;
+			packet.payload[7] = RESERVED;
+			packet.payload[8] = RESERVED;
+			packet.payload[9] = RESERVED;
+
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+		
+		default:
+			TRACE(2,"%s: undefined OPTYPE 0x%x!\r\n",__func__, OPTYPE);
+			break;
+	}
+}
+
 bool APP_Functions_Call(uint8_t *data, uint32_t size)
 {
 	uint8_t CMDID = (uint8_t)data[1];
@@ -589,6 +653,11 @@ bool APP_Functions_Call(uint8_t *data, uint32_t size)
 		case CMDID_LOW_LATENCY_MODE:
 			TRACE(1,"%s: CMDID_LOW_LATENCY_MODE\r\n",__func__);
 			Set_Get_Low_Latency_Mode(data, size);
+			return true;
+
+		case CMDID_OTA_FIRMWARE_UPGRADE:
+			TRACE(1,"%s: CMDID_OTA_FIRMWARE_UPGRADE\r\n",__func__);
+			Set_Get_Firmware_Upgrade(data, size);
 			return true;
 			
 		default:

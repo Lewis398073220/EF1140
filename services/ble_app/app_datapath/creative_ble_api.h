@@ -151,11 +151,23 @@ enum LOW_LATENCY_MODE {
 	OPTYPE_SET_LOW_LATENCY_MODE = 0x01,
 };
 
+enum FIRMWARE_UPGRADE {
+	CMDID_OTA_FIRMWARE_UPGRADE = 0x53,
+	OPTYPE_SET_OPERATION = 0x00,
+};
+
+enum FIRMWARE_UPGRADE_CONTROL_TYPE_TABLE {
+	ENTER_FIRMWARE_UPGRADE_MODE = 0x01,
+	EXIT_FIRMWARE_UPGRADE_MODE = 0x02,
+};
+
 void APP_protocol_port(uint8_t port);
 void APP_Send_Notify(uint8_t *data, uint32_t size);
 bool APP_Api_Entry(uint8_t *data, uint32_t size);
 bool APP_Functions_Call(uint8_t *data, uint32_t size);
 void Noise_Control_Change_Notify(void);
+void Low_Latency_Mode_Change_Notify(void);
+void Battery_Level_Change_Notify(void);
 
 #ifdef __cplusplus
 }
