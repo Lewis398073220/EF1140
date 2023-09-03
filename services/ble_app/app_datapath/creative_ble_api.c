@@ -298,7 +298,8 @@ void Set_Get_Graphic_Equalizer(uint8_t *data, uint32_t size)
 	uint8_t OPTYPE = (uint8_t)data[4], i = 0, j = 0;
 	float eq_gain[CUSEQ_BANDS_NUM] = {0};
 	uint8_t little_endian[4] = {0};//must clear
-
+	uint16_t eq_freq[CUSEQ_BANDS_NUM] = {31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
+	
 	switch(OPTYPE)
 	{
 		case OPTYPE_GRAPHIC_EQUALIZER_QUERY:
@@ -312,6 +313,52 @@ void Set_Get_Graphic_Equalizer(uint8_t *data, uint32_t size)
 			APP_Send_Notify((uint8_t *)(&packet), packetLen);
 			break;
 
+		case OPTYPE_TOTAL_NUMBER_OF_BANDS_AVAILABLE:
+			TRACE(1,"%s: OPTYPE_TOTAL_NUMBER_OF_BANDS_AVAILABLE\r\n",__func__);
+			packet.cmdID = CMDID_GRAPHIC_EQUALIZER;
+			packet.payloadLen = CUSEQ_BANDS_NUM * 2 + 2;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_TOTAL_NUMBER_OF_BANDS_AVAILABLE;
+			packet.payload[1] = CUSEQ_BANDS_NUM;//Number of EQ bands
+			for(i = 0; i < CUSEQ_BANDS_NUM; i++)
+			{
+				*((uint16_t *)(packet.payload + 2 + i*2)) = eq_freq[i];//Band Frequency
+			}
+			
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+
+		case OPTYPE_BAND_RANGE_QUERY:
+			TRACE(1,"%s: OPTYPE_BAND_RANGE_QUERY\r\n",__func__);
+			packet.cmdID = CMDID_GRAPHIC_EQUALIZER;
+			packet.payloadLen = 0x0D;
+			packetLen = packet.payloadLen + 4;
+			packet.payload[0] = OPTYPE_BAND_RANGE_QUERY;
+			
+			*((float *)little_endian) = 9.0;//EQ band max Level
+			packet.payload[1] = little_endian[0];
+			packet.payload[2] = little_endian[1];
+			packet.payload[3] = little_endian[2];
+			packet.payload[4] = little_endian[3];
+			PrintFloat(*((float *)(packet.payload + 1)));
+
+			*((float *)little_endian) = -9.0;//EQ band min Level
+			packet.payload[5] = little_endian[0];
+			packet.payload[6] = little_endian[1];
+			packet.payload[7] = little_endian[2];
+			packet.payload[8] = little_endian[3];
+			PrintFloat(*((float *)(packet.payload + 5)));
+
+			*((float *)little_endian) = 0.1;//EQ band step Level
+			packet.payload[9] = little_endian[0];
+			packet.payload[10] = little_endian[1];
+			packet.payload[11] = little_endian[2];
+			packet.payload[12] = little_endian[3];
+			PrintFloat(*((float *)(packet.payload + 9)));
+
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
+			break;
+			
 		case OPTYPE_ALL_BANDS_LEVEL_QUERY:
 			TRACE(1,"%s: OPTYPE_ALL_BANDS_LEVEL_QUERY\r\n",__func__);
 			packet.cmdID = CMDID_GRAPHIC_EQUALIZER;
@@ -340,15 +387,23 @@ void Set_Get_Graphic_Equalizer(uint8_t *data, uint32_t size)
 			if(data[5] == CUSEQ_BANDS_NUM){
 				for(i = 0; i < 10; i++)
 				{
-					little_endian[3] = *(data + 7 + i*5);
-					little_endian[2] = *(data + 8 + i*5);
-					little_endian[1] = *(data + 9 + i*5);
-					little_endian[0] = *(data + 10 + i*5);
-					eq_gain[i] = *((float *)little_endian);
-					PrintFloat(eq_gain[i]);
+					little_endian[0] = *(data + 7 + i*5);
+					little_endian[1] = *(data + 8 + i*5);
+					little_endian[2] = *(data + 9 + i*5);
+					little_endian[3] = *(data + 10 + i*5);
+					if(*(data + 6 + i*5) < CUSEQ_BANDS_NUM) {
+						eq_gain[*(data + 6 + i*5)] = *((float *)little_endian);
+						TRACE(0,"eq_gain[%d]=",*(data + 6 + i*5));
+						PrintFloat(eq_gain[*(data + 6 + i*5)]);
+					} else{
+						TRACE(0,"error eq index=%d",*(data + 6 + i*5));
+					}	
 				}
 
-				app_p_nvrecord_custom_eq_para_set(eq_gain);
+				//Firmware needs to save band level
+				if(data[56] == 1) app_p_nvrecord_custom_eq_para_set(eq_gain);
+				else app_local_custom_eq_para_set(eq_gain);
+				
 				app_nvrecord_eq_index_set(0x3F);
 				BLE_bt_audio_updata_eq();
 			}
@@ -485,7 +540,8 @@ void Set_Get_Noise_Control(uint8_t *data, uint32_t size)
 			packet.payload[0] = OPTYPE_SUPPORTED_NOISE_CONTROL_LEVEL_QUERY;
 			packet.payload[1] = data[5];
 			*((uint16_t *)(packet.payload + 2)) = 0x00;//Not supported
-			
+
+			APP_Send_Notify((uint8_t *)(&packet), packetLen);
 			break;
 			
 		default:
